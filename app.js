@@ -1,10 +1,9 @@
 import Store from "./services/Store.js";
-import API from "./services/API.js";
+import API from "./services/Api.js";
 
 window.app = {};
 app.store = Store;
 
-window.addEventListener("DOMContentLoaded", () => {
-  let nav = document.querySelector("nav");
-  nav.innerHTML;
+window.addEventListener("DOMContentLoaded", async() => {
+  const menu = await API.fetchMenu();
 });
