@@ -206,13 +206,18 @@ button.navlink:active {
 
 /* Admin panel icon - ensure visibility in both themes */
 #linkAdmin {
-  display: none !important;
+  display: none;
   position: absolute !important;
   top: 5px !important;
   right: 5px !important;
   opacity: 1 !important;
   color: var(--text-color) !important;
   z-index: 1000 !important;
+}
+
+/* Force admin icon to be visible when shown */
+#linkAdmin[style*="flex"] {
+  display: flex !important;
 }
 
 #linkAdmin:hover {
