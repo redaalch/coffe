@@ -51,10 +51,16 @@
       };
     </script>
 
-    <script type="module">
-      // Load main app with correct path
-      import(getPath("app.js"));
+    <!-- Load main app script dynamically -->
+    <script>
+      // Create and append the main app script with correct path
+      const appScript = document.createElement("script");
+      appScript.src = getPath("app.js");
+      appScript.type = "module";
+      appScript.defer = true;
+      document.head.appendChild(appScript);
     </script>
+
     <link rel="stylesheet" id="main-styles" />
     <link rel="manifest" id="app-manifest" />
     <link rel="apple-touch-icon" id="apple-icon" />
