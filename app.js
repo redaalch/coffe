@@ -119,12 +119,21 @@ function setupThemeToggle() {
 }
 
 function setupMobileNavigation() {
+  console.log("Setting up mobile navigation...");
   const hamburgerToggle = document.getElementById("hamburger-toggle");
   const mobileNav = document.getElementById("mobile-nav");
   const mobileNavOverlay = document.getElementById("mobile-nav-overlay");
   const mobileNavLinks = document.querySelectorAll(".mobile-nav .nav-item");
 
+  console.log("Elements found:", {
+    hamburgerToggle: !!hamburgerToggle,
+    mobileNav: !!mobileNav,
+    mobileNavOverlay: !!mobileNavOverlay,
+    mobileNavLinks: mobileNavLinks.length,
+  });
+
   function toggleMobileNav() {
+    console.log("Toggle mobile nav called");
     hamburgerToggle.classList.toggle("active");
     mobileNav.classList.toggle("active");
     mobileNavOverlay.classList.toggle("active");
@@ -132,12 +141,15 @@ function setupMobileNavigation() {
     // Prevent body scroll when menu is open
     if (mobileNav.classList.contains("active")) {
       document.body.style.overflow = "hidden";
+      console.log("Mobile nav opened");
     } else {
       document.body.style.overflow = "";
+      console.log("Mobile nav closed");
     }
   }
 
   function closeMobileNav() {
+    console.log("Close mobile nav called");
     hamburgerToggle.classList.remove("active");
     mobileNav.classList.remove("active");
     mobileNavOverlay.classList.remove("active");
@@ -145,7 +157,10 @@ function setupMobileNavigation() {
   }
 
   if (hamburgerToggle) {
+    console.log("Adding click listener to hamburger toggle");
     hamburgerToggle.addEventListener("click", toggleMobileNav);
+  } else {
+    console.error("Hamburger toggle element not found!");
   }
 
   if (mobileNavOverlay) {
