@@ -94,12 +94,23 @@
 
   <body>
     <header>
+      <!-- Hamburger Menu Button -->
+      <button class="hamburger-menu" id="hamburger-toggle">
+        <div class="hamburger-icon">
+          <span class="hamburger-line"></span>
+          <span class="hamburger-line"></span>
+          <span class="hamburger-line"></span>
+        </div>
+      </button>
+
       <h1>
         <img id="logo-img" width="140" alt="Coffee Masters" />
         <script>
           document.getElementById("logo-img").src = getPath("images/logo.svg");
         </script>
       </h1>
+
+      <!-- Desktop Navigation -->
       <nav>
         <a class="navlink material-symbols-outlined" id="linkHome" href="/">
           local_cafe
@@ -139,6 +150,47 @@
         </a>
       </nav>
     </header>
+
+    <!-- Mobile Navigation Overlay -->
+    <div class="mobile-nav-overlay" id="mobile-nav-overlay"></div>
+
+    <!-- Mobile Navigation Menu -->
+    <nav class="mobile-nav" id="mobile-nav">
+      <a class="nav-item" id="mobile-linkHome" href="/">
+        <span class="material-symbols-outlined">local_cafe</span>
+        <span class="nav-text">Menu</span>
+      </a>
+      <a class="nav-item" id="mobile-linkOrder" href="/order">
+        <span class="material-symbols-outlined">shopping_cart</span>
+        <span class="nav-text">Order</span>
+        <span id="mobile-badge" hidden></span>
+      </a>
+      <button
+        class="nav-item"
+        id="mobile-theme-toggle"
+        title="Toggle dark mode"
+      >
+        <span class="material-symbols-outlined">dark_mode</span>
+        <span class="nav-text">Dark Mode</span>
+      </button>
+      <a class="nav-item" id="mobile-linkProfile" href="/profile">
+        <span class="material-symbols-outlined">account_circle</span>
+        <span class="nav-text">Profile</span>
+      </a>
+      <a
+        class="nav-item"
+        id="mobile-linkAdmin"
+        href="/admin"
+        title="Admin Panel"
+      >
+        <span class="material-symbols-outlined">admin_panel_settings</span>
+        <span class="nav-text">Admin Panel</span>
+      </a>
+      <a class="nav-item" id="mobile-linkAuth" href="/auth">
+        <span class="material-symbols-outlined">login</span>
+        <span class="nav-text">Login</span>
+      </a>
+    </nav>
 
     <main></main>
 
