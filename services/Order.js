@@ -12,10 +12,16 @@ export async function addToCart(id) {
   } else {
     app.store.cart = [...app.store.cart, { product, quantity: 1 }];
   }
+
+  // Trigger cart update event to update the counter
+  window.dispatchEvent(new Event("appcartchange"));
 }
 
 export function removeFromCart(id) {
   app.store.cart = app.store.cart.filter(
     (prodInCart) => prodInCart.product.id != id
   );
+
+  // Trigger cart update event to update the counter
+  window.dispatchEvent(new Event("appcartchange"));
 }

@@ -1,7 +1,7 @@
 // Coffee Masters PWA Service Worker
 // Version 2.1 - Enhanced with automatic cache busting and updates
 
-const CACHE_VERSION = "v2.1.3"; // Updated version to clear old manifest cache
+const CACHE_VERSION = "v2.1.5"; // Updated version for cart badge positioning fix
 const CACHE_NAME = "coffee-masters-" + CACHE_VERSION;
 const STATIC_CACHE = "coffee-masters-static-" + CACHE_VERSION;
 const DYNAMIC_CACHE = "coffee-masters-dynamic-" + CACHE_VERSION;
