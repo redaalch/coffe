@@ -96,12 +96,18 @@ class PWAManager {
   }
 
   async promptInstall() {
+    console.log("PWA: promptInstall called, deferredPrompt:", !!this.deferredPrompt);
+    
     if (!this.deferredPrompt) {
-      console.log("PWA: Install prompt not available");
+      console.log("PWA: Install prompt not available, hiding banner");
+      this.hideInstallBanner();
+      // Show a message to user
+      this.showInstallInstructions();
       return false;
     }
 
     try {
+      console.log("PWA: Showing install prompt");
       this.deferredPrompt.prompt();
       const result = await this.deferredPrompt.userChoice;
 
@@ -115,8 +121,39 @@ class PWAManager {
       return result.outcome === "accepted";
     } catch (error) {
       console.error("PWA: Install prompt error:", error);
+      this.hideInstallBanner();
       return false;
     }
+  }
+
+  showInstallInstructions() {
+    // Show instructions for manual installation
+    const instructions = document.createElement("div");
+    instructions.id = "install-instructions";
+    instructions.style.cssText = `
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: linear-gradient(135deg, #43281c 0%, #7f4f24 100%);
+      color: #ede0d4;
+      padding: 1rem;
+      z-index: 1000;
+      text-align: center;
+    `;
+    
+    instructions.innerHTML = `
+      <p>To install: Tap the browser menu (⋮) and select "Add to Home Screen" or "Install App"</p>
+      <button onclick="this.parentElement.remove()" style="background: rgba(237,224,212,0.2); border: 1px solid rgba(237,224,212,0.4); color: #ede0d4; padding: 0.5rem 1rem; border-radius: 15px; margin-top: 0.5rem;">Got it</button>
+    `;
+    
+    document.body.appendChild(instructions);
+    
+    setTimeout(() => {
+      if (instructions.parentElement) {
+        instructions.remove();
+      }
+    }, 5000);
   }
 
   // Network Detection
@@ -508,10 +545,12 @@ class PWAManager {
 
     // Event listeners
     banner.querySelector("#install-app").addEventListener("click", () => {
+      console.log("Install button clicked");
       this.promptInstall();
     });
 
     banner.querySelector("#dismiss-install").addEventListener("click", () => {
+      console.log("Dismiss button clicked");
       // Save dismiss time to localStorage
       localStorage.setItem("pwa-install-dismissed", Date.now().toString());
       this.hideInstallBanner();
@@ -519,8 +558,10 @@ class PWAManager {
   }
 
   hideInstallBanner() {
+    console.log("PWA: hideInstallBanner called");
     const banner = document.getElementById("install-banner");
     if (banner) {
+      console.log("PWA: Hiding install banner");
       banner.style.transform = "translateY(100%)";
       setTimeout(() => {
         banner.remove();
@@ -531,7 +572,10 @@ class PWAManager {
             style.remove();
           }
         });
+        console.log("PWA: Install banner removed");
       }, 400);
+    } else {
+      console.log("PWA: Install banner not found");
     }
   }
 
