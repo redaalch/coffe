@@ -4,8 +4,8 @@
   "theme_color": "#43281C",
   "display": "standalone",
   "background_color": "#EFEFEF",
-  "start_url": "/coffe/",
-  "scope": "/coffe/",
+  "start_url": "./",
+  "scope": "./",
   "description": "The premium coffee ordering app with offline support, order tracking, and admin panel. Order your favorite coffee drinks and pastries from Coffee Masters.",
   "categories": ["food", "lifestyle", "shopping"],
   "orientation": "portrait-primary",
@@ -13,25 +13,25 @@
   "dir": "ltr",
   "icons": [
     {
-      "src": "/coffe/images/icons/icon.png",
+      "src": "./images/icons/icon.png",
       "sizes": "1024x1024",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "/coffe/images/icons/icon.png",
+      "src": "./images/icons/icon.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "/coffe/images/icons/icon.png",
+      "src": "./images/icons/icon.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "/coffe/images/icons/icon-maskable.png",
+      "src": "./images/icons/icon-maskable.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable"
@@ -39,13 +39,13 @@
   ],
   "screenshots": [
     {
-      "src": "/coffe/images/screen1.jpg",
+      "src": "./images/screen1.jpg",
       "type": "image/jpeg",
       "sizes": "1280x720",
       "platform": "wide"
     },
     {
-      "src": "/coffe/images/screen2.jpg",
+      "src": "./images/screen2.jpg",
       "type": "image/jpeg",
       "sizes": "720x1280",
       "platform": "narrow"
@@ -55,10 +55,10 @@
     {
       "name": "View Menu",
       "description": "Browse our coffee and pastry menu",
-      "url": "/coffe/",
+      "url": "./",
       "icons": [
         {
-          "src": "/coffe/images/icons/icon.png",
+          "src": "./images/icons/icon.png",
           "sizes": "192x192",
           "type": "image/png"
         }
@@ -67,10 +67,10 @@
     {
       "name": "My Orders",
       "description": "View your order history and current orders",
-      "url": "/coffe/order",
+      "url": "./order",
       "icons": [
         {
-          "src": "/coffe/images/icons/icon.png",
+          "src": "./images/icons/icon.png",
           "sizes": "192x192",
           "type": "image/png"
         }
@@ -79,10 +79,10 @@
     {
       "name": "Profile",
       "description": "View your profile and favorites",
-      "url": "/coffe/profile",
+      "url": "./profile",
       "icons": [
         {
-          "src": "/coffe/images/icons/icon.png",
+          "src": "./images/icons/icon.png",
           "sizes": "192x192",
           "type": "image/png"
         }
