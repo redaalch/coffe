@@ -1,69 +1,191 @@
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem;
+  color: var(--color4, #b08968);
+}
+
+.loading-container p {
+  margin-top: 1rem;
+  font-style: italic;
+}
+
+.no-results {
+  text-align: center;
+  padding: 2rem;
+  color: var(--color4, #b08968);
+}
+
+.no-results p {
+  margin: 0.5rem 0;
+}
+
+.no-results p:first-child {
+  font-weight: 600;
+}
+
+.no-results p:last-child {
+  font-style: italic;
+  font-size: 0.9rem;
+}
+
+.search-filters {
+  padding: 1rem;
+  background: var(--bg-color, white);
+  margin: 0.5rem;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px var(--shadow, rgba(0, 0, 0, 0.1));
+  position: sticky;
+  top: 60px;
+  z-index: 100;
+}
+
+.search-container {
+  position: relative;
+  margin-bottom: 1rem;
+}
+
+.search-container input {
+  width: 100%;
+  padding: 12px 45px 12px 15px;
+  border: 2px solid var(--border-color, #e0e0e0);
+  border-radius: 25px;
+  font-size: 16px;
+  background: var(--bg-color, white);
+  color: var(--text-color, #333);
+  box-sizing: border-box;
+  transition: border-color 0.3s ease;
+}
+
+.search-container input:focus {
+  outline: none;
+  border-color: var(--primaryColor, #43281c);
+}
+
+.search-icon {
+  position: absolute;
+  right: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--color4, #b08968);
+  font-size: 20px;
+}
+
+.filter-container select {
+  width: 100%;
+  padding: 12px 15px;
+  border: 2px solid var(--border-color, #e0e0e0);
+  border-radius: 8px;
+  font-size: 16px;
+  background: var(--bg-color, white);
+  color: var(--text-color, #333);
+  cursor: pointer;
+  transition: border-color 0.3s ease;
+}
+
+.filter-container select:focus {
+  outline: none;
+  border-color: var(--primaryColor, #43281c);
+}
+
 ul {
-    list-style: none;
-    padding: 0;
+  list-style: none;
+  padding: 0;
 }
 
 h3 {
-    color: var(--color4);
-    font-weight: normal;
-    padding-top: 15px;
-    font-size: 17px;
+  color: var(--color4);
+  font-weight: normal;
+  padding-top: 15px;
+  font-size: 17px;
 }
 
 button {
-    background-color: var(--color5);
-    border: 0;
-    margin: 10px 3%;
-    padding: 5px 0;
-    border-radius: 40px;
-    color: var(--color3);
-    font-size: 16px;
-    flex-grow: 1;
+  background-color: var(--color5);
+  border: 0;
+  margin: 10px 3%;
+  padding: 5px 0;
+  border-radius: 40px;
+  color: var(--color3);
+  font-size: 16px;
+  flex-grow: 1;
+}
+
+.favorite-btn {
+  background: none !important;
+  border: none !important;
+  font-size: 20px !important;
+  padding: 5px !important;
+  margin: 0 5px 0 0 !important;
+  cursor: pointer;
+  border-radius: 50% !important;
+  transition: all 0.3s ease;
+  flex-grow: 0 !important;
+  width: 35px;
+  height: 35px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.favorite-btn:hover {
+  background-color: rgba(220, 53, 69, 0.1) !important;
 }
 
 article section div {
-    flex-grow: 2;
+  flex-grow: 2;
+  display: flex;
+  flex-direction: column;
+}
+
+article section div > div {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
 ul {
-    background-color: var(--color6);
-    margin: 4px 6px;
-    padding: 0px 12px;
-    border-radius: 10px;
-    padding-bottom: 10px;
+  background-color: var(--color6);
+  margin: 4px 6px;
+  padding: 0px 12px;
+  border-radius: 10px;
+  padding-bottom: 10px;
 }
 
-article { 
-    background-color: white;
-    margin-bottom: 16px;
-    padding-bottom: 1px;
-    border-radius: 5px;
+article {
+  background-color: var(--bg-color, white);
+  margin-bottom: 16px;
+  padding-bottom: 1px;
+  border-radius: 5px;
+  box-shadow: 0 2px 8px var(--shadow, rgba(0, 0, 0, 0.1));
 }
 
 article img {
-    width: 100%;
+  width: 100%;
+  border-radius: 5px 5px 0 0;
 }
 
 article a {
-    text-decoration: none;
-    display: block;
+  text-decoration: none;
+  display: block;
 }
 
 article section {
-    display: flex;
+  display: flex;
+  align-items: stretch;
 }
 
-
-
-
 h4 {
-    margin: 8px 0 0 12px;
-    color: #333D29;
-    font-size: 18px;
-    font-weight: bold;
+  margin: 8px 0 0 12px;
+  color: var(--text-color, #333d29);
+  font-size: 18px;
+  font-weight: bold;
 }
 
 .price {
-    margin: 0px 0 0px 12px;
-    color: #B08968
+  margin: 0px 0 0px 12px;
+  color: var(--color4, #b08968);
+  font-weight: 600;
 }

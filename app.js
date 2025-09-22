@@ -1,24 +1,65 @@
 import Store from "./services/Store.js";
 import API from "./services/API.js";
+import Auth from "./services/Auth.js";
+import ThemeManager from "./services/ThemeManager.js";
 import { loadData } from "./services/Menu.js";
 import Router from "./services/Router.js";
 
 import { MenuPage } from "./components/MenuPage.js";
 import { DetailsPage } from "./components/DetailsPage.js";
 import { OrderPage } from "./components/OrderPage.js";
+import { AuthPage } from "./components/AuthPage.js";
+import { ProfilePage } from "./components/ProfilePage.js";
 import ProductItem from "./components/ProductItem.js";
 import CartItem from "./components/CartItem.js";
 
 window.app = {};
 app.store = Store;
 app.router = Router;
+app.auth = Auth;
+app.theme = ThemeManager;
 window.addEventListener("DOMContentLoaded", async () => {
   loadData();
   app.router.init();
+  updateAuthUI();
+  setupThemeToggle();
+  // Initialize cart counter with current cart items
+  updateCartCounter();
 });
+
 window.addEventListener("appcartchange", (event) => {
+  updateCartCounter();
+});
+
+function updateCartCounter() {
   const badge = document.getElementById("badge");
   const qty = app.store.cart.reduce((acc, item) => acc + item.quantity, 0);
   badge.textContent = qty;
   badge.hidden = qty == 0;
+}
+
+window.addEventListener("authchange", () => {
+  updateAuthUI();
 });
+
+function updateAuthUI() {
+  const authLink = document.getElementById("linkAuth");
+  const profileLink = document.getElementById("linkProfile");
+
+  if (app.auth.isAuthenticated()) {
+    authLink.style.display = "none";
+    profileLink.style.display = "block";
+  } else {
+    authLink.style.display = "block";
+    profileLink.style.display = "none";
+  }
+}
+
+function setupThemeToggle() {
+  const themeToggle = document.getElementById("theme-toggle");
+  if (themeToggle) {
+    themeToggle.addEventListener("click", () => {
+      app.theme.toggleTheme();
+    });
+  }
+}

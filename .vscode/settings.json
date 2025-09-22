@@ -1,0 +1,27 @@
+{
+  "liveServer.settings.file": "index.html",
+  "liveServer.settings.root": "/",
+  "liveServer.settings.CustomBrowser": null,
+  "liveServer.settings.AdvanceCustomBrowserCmdLine": null,
+  "liveServer.settings.NoBrowser": false,
+  "liveServer.settings.ignoreFiles": [".vscode/**", "**/*.scss", "**/*.sass"],
+  "liveServer.settings.mount": [["/", "./"]],
+  "liveServer.settings.proxy": {
+    "enable": false,
+    "baseUri": "/",
+    "proxyUri": "http://127.0.0.1:80"
+  },
+  "liveServer.settings.https": {
+    "enable": false,
+    "cert": "",
+    "key": "",
+    "passphrase": ""
+  },
+  "liveServer.settings.multiRootWorkspaceName": "",
+  "liveServer.settings.showOnStatusbar": true,
+  "liveServer.settings.donotShowInfoMsg": false,
+  "liveServer.settings.wait": 100,
+  "liveServer.settings.fullReload": false,
+  "liveServer.settings.useLocalIp": false,
+  "liveServer.settings.useWebExt": false
+}

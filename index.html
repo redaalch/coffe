@@ -37,6 +37,23 @@
           shopping_cart
         </a>
         <span id="badge" hidden></span>
+        <button
+          class="navlink material-symbols-outlined"
+          id="theme-toggle"
+          title="Toggle dark mode"
+        >
+          dark_mode
+        </button>
+        <a
+          class="navlink material-symbols-outlined"
+          id="linkProfile"
+          href="/profile"
+        >
+          account_circle
+        </a>
+        <a class="navlink material-symbols-outlined" id="linkAuth" href="/auth">
+          login
+        </a>
       </nav>
     </header>
 
@@ -93,13 +110,66 @@
 
     <template id="cart-item-template">
       <li>
-        <p class="qty"></p>
-        <p class="name"></p>
+        <img class="cart-item-image" src="" alt="" />
+        <div class="cart-item-details">
+          <p class="name"></p>
+          <div class="qty"></div>
+        </div>
         <p class="price"></p>
         <p class="toolbar">
           <a href="#" class="delete-button"> 🗑️ </a>
         </p>
       </li>
     </template>
+
+    <style>
+      .qty-label {
+        font-size: 12px;
+        color: var(--color4, #b08968);
+        margin: 0;
+        font-weight: 500;
+      }
+
+      .quantity-controls {
+        display: flex;
+        align-items: center;
+        gap: 0;
+        background: var(--bg-color, white);
+        border: 1px solid var(--border-color, #ddd);
+        border-radius: 20px;
+        padding: 2px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+      }
+
+      .qty-btn {
+        width: 24px;
+        height: 24px;
+        border: none;
+        background: transparent;
+        color: var(--text-color, #333);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        font-weight: bold;
+        font-size: 12px;
+        transition: all 0.2s ease;
+      }
+
+      .qty-btn:hover {
+        background: var(--color1, #7f5539);
+        color: white;
+      }
+
+      .qty-display {
+        min-width: 30px;
+        text-align: center;
+        font-weight: 500;
+        color: var(--text-color, #333);
+        padding: 0 8px;
+        line-height: 24px;
+      }
+    </style>
   </body>
 </html>

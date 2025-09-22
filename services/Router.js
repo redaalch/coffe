@@ -6,36 +6,49 @@ const Router = {
         const url = event.target.getAttribute("href");
         Router.go(url);
       });
-      window.addEventListener("popstate",event=>{
-        Router.go(event.state.route,false);
-      })
     });
-    Router.go(location.pathname);
+    window.addEventListener("popstate", (event) => {
+      Router.go(event.state?.route || location.pathname, false);
+    });
+    // Handle initial load - get the current path and route to it
+    const currentPath = location.pathname;
+    Router.go(currentPath);
   },
   go: (route, addToHistory = true) => {
     if (addToHistory) {
       history.pushState({ route }, "", route);
     }
-    let pageElmenet = null;
+    let pageElement = null;
     switch (route) {
       case "/":
-        pageElmenet = document.createElement("menu-page");
+        pageElement = document.createElement("menu-page");
         break;
       case "/order":
-        pageElmenet = document.createElement("order-page");
+        pageElement = document.createElement("order-page");
+        break;
+      case "/auth":
+        pageElement = document.createElement("auth-page");
+        break;
+      case "/profile":
+        pageElement = document.createElement("profile-page");
         break;
       default:
         if (route.startsWith("/product-")) {
-          pageElmenet = document.createElement("details-page");
-          pageElmenet.textContent = "Details";
-          const paramId = route.substring(route.lastIndexOf("-")+1);
-          pageElmenet.dataset.id = paramId;
+          pageElement = document.createElement("details-page");
+          pageElement.textContent = "Details";
+          const paramId = route.substring(route.lastIndexOf("-") + 1);
+          pageElement.dataset.id = paramId;
+        } else {
+          // For unknown routes, redirect to home
+          console.log(`Unknown route: ${route}, redirecting to home`);
+          Router.go("/", true);
+          return;
         }
     }
-    if (pageElmenet) {
+    if (pageElement) {
       const cache = document.querySelector("main");
       cache.innerHTML = "";
-      cache.appendChild(pageElmenet);
+      cache.appendChild(pageElement);
       window.scrollX = 0;
       window.scrollY = 0;
     }

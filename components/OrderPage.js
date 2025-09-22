@@ -66,24 +66,62 @@ export class OrderPage extends HTMLElement {
   setFormBindings(form) {
     form.addEventListener("submit", (event) => {
       event.preventDefault();
-      alert("thanks for your order " + this.#user.name);
+
+      // Calculate total
+      let total = 0;
+      for (let prodInCart of app.store.cart) {
+        total += prodInCart.quantity * prodInCart.product.price;
+      }
+
+      // Create order object
+      const order = {
+        items: [...app.store.cart],
+        total: total,
+        customerInfo: { ...this.#user },
+      };
+
+      // Save order if user is authenticated
+      if (app.auth.isAuthenticated()) {
+        app.auth.addOrder(order);
+      }
+
+      alert(
+        "Thanks for your order " +
+          this.#user.name +
+          "! Total: $" +
+          total.toFixed(2)
+      );
+
+      // Clear cart and form
+      app.store.cart = [];
       this.#user.name = "";
       this.#user.email = "";
       this.#user.phone = "";
+      form.reset();
     });
 
     this.#user = new Proxy(this.#user, {
       set(target, property, value) {
         target[property] = value;
-        form.elements[property].value = value;
+        if (form.elements[property]) {
+          form.elements[property].value = value;
+        }
         return true;
       },
     });
-    Array.form(form.elements).forEach((element) => {
+
+    Array.from(form.elements).forEach((element) => {
       element.addEventListener("change", (event) => {
         this.#user[element.name] = element.value;
       });
     });
+
+    // Pre-fill form if user is authenticated
+    if (app.auth.isAuthenticated()) {
+      const user = app.auth.currentUser;
+      this.#user.name = user.name;
+      this.#user.email = user.email;
+    }
   }
 }
 customElements.define("order-page", OrderPage);

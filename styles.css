@@ -1,80 +1,269 @@
 :root {
-    --background-surface: #EFEFEF;
-    --primaryColor: #43281C;
-    --secondaryColor: #333D29;
-    --color3: #7F4F24;
-    --color4: #B08968;
-    --color5: #DDB892;
-    --color6: #EDE0D4;
-    --highlight: #FBF2C6;
+  --background-surface: #efefef;
+  --primaryColor: #43281c;
+  --secondaryColor: #333d29;
+  --color3: #7f4f24;
+  --color4: #b08968;
+  --color5: #ddb892;
+  --color6: #ede0d4;
+  --highlight: #fbf2c6;
+  --text-color: #333;
+  --bg-color: #ffffff;
+  --border-color: #e0e0e0;
+  --shadow: rgba(0, 0, 0, 0.1);
+}
+
+[data-theme="dark"] {
+  --background-surface: #1a1a1a;
+  --primaryColor: #d4a574;
+  --secondaryColor: #b8935f;
+  --color3: #8b5a3c;
+  --color4: #7a6752;
+  --color5: #5d4e37;
+  --color6: #3c2f2f;
+  --highlight: #2a2a2a;
+  --text-color: #ffffff;
+  --bg-color: #2a2a2a;
+  --border-color: #555;
+  --shadow: rgba(0, 0, 0, 0.3);
+}
+
+* {
+  transition: background-color 0.3s ease, color 0.3s ease,
+    border-color 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+}
+
+@keyframes bounce {
+  0%,
+  20%,
+  50%,
+  80%,
+  100% {
+    transform: translateY(0);
+  }
+  40% {
+    transform: translateY(-10px);
+  }
+  60% {
+    transform: translateY(-5px);
+  }
+}
+
+.loading {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border: 3px solid rgba(0, 0, 0, 0.1);
+  border-radius: 50%;
+  border-top-color: var(--primaryColor);
+  animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 body {
-    padding: 0;
-    margin: 0;
-    font-family: 'Open Sans', sans-serif;
+  padding: 0;
+  margin: 0;
+  font-family: "Open Sans", sans-serif;
+  background-color: var(--background-surface);
+  color: var(--text-color);
 }
 
-body>header {
-    position: fixed;
-    width: 100%;
-    top: 0;
+body > header {
+  position: fixed;
+  width: 100%;
+  top: 0;
+  z-index: 1000;
+  animation: slideIn 0.5s ease-out;
 }
 
-body>main {
-    margin: auto;
-    margin-top: 60px;
-    max-width: 500px;
+body > main {
+  margin: auto;
+  margin-top: 60px;
+  max-width: 500px;
+  min-height: calc(100vh - 60px);
+  animation: fadeIn 0.5s ease-out;
 }
 
 h1 {
-    background-color: var(--primaryColor);
-    color: white;
-    margin: 0;
-    text-align: center;
-    padding: 10px 0 5px 0;
-    font-size: 20px;
-    font-weight: normal;
+  background-color: var(--primaryColor);
+  color: white;
+  margin: 0;
+  text-align: center;
+  padding: 10px 0 5px 0;
+  font-size: 20px;
+  font-weight: normal;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
 }
 
 ul {
-    display: none;
-    padding: 0;
+  display: none;
+  padding: 0;
 }
 
-a.navlink {
-    color: var(--highlight);
-    padding: 8px;
-    text-decoration: none;
+a.navlink,
+button.navlink {
+  color: var(--highlight);
+  padding: 8px;
+  text-decoration: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  border-radius: 4px;
+}
+
+a.navlink:hover,
+button.navlink:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  transform: scale(1.1);
+}
+
+a.navlink:active,
+button.navlink:active {
+  animation: pulse 0.3s ease;
 }
 
 #linkHome {
-    display: block;
-    position: absolute;
-    top: 5px;
-    left: 5px;
+  display: block;
+  position: absolute;
+  top: 5px;
+  left: 5px;
 }
 
 #linkOrder {
-    display: block;
-    position: absolute;
-    top: 5px;
-    right: 5px;
+  display: block;
+  position: absolute;
+  top: 5px;
+  right: 120px;
+}
+
+#theme-toggle {
+  display: block;
+  position: absolute;
+  top: 5px;
+  right: 80px;
+}
+
+#linkProfile {
+  display: none;
+  position: absolute;
+  top: 5px;
+  right: 40px;
+}
+
+#linkAuth {
+  display: block;
+  position: absolute;
+  top: 5px;
+  right: 5px;
 }
 
 section.page {
-    display: none;
+  display: none;
 }
 
 #badge {
-    padding: 4px;
-    background-color: red;
-    border-radius: 15px;
-    width: 10px;
-    text-align: center;
-    font-size: x-small;
-    color: white;
-    position: absolute;
-    right: 5px;
-    top: 6px;
+  padding: 4px;
+  background-color: red;
+  border-radius: 15px;
+  width: 10px;
+  text-align: center;
+  font-size: x-small;
+  color: white;
+  position: absolute;
+  right: 115px;
+  top: 6px;
+  z-index: 1001;
+  animation: bounce 0.6s ease-in-out;
+}
+
+/* Enhanced button animations */
+button:not(.navlink):not(.qty-btn):not(.favorite-btn) {
+  transition: all 0.3s ease;
+}
+
+button:not(.navlink):not(.qty-btn):not(.favorite-btn):hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+button:not(.navlink):not(.qty-btn):not(.favorite-btn):active {
+  transform: translateY(0);
+  animation: pulse 0.2s ease;
+}
+
+/* Page transition animations */
+main > * {
+  animation: fadeIn 0.5s ease-out;
+}
+
+/* Form elements animations */
+input:focus,
+select:focus,
+textarea:focus {
+  animation: pulse 0.3s ease;
+}
+
+/* Success/error state animations */
+.success {
+  animation: bounce 0.6s ease-in-out;
+}
+
+.error {
+  animation: shake 0.5s ease-in-out;
+}
+
+@keyframes shake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-5px);
+  }
+  75% {
+    transform: translateX(5px);
+  }
 }
