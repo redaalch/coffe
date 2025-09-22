@@ -1,34 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Coffee Masters</title>
-    <script>
-      // GitHub Pages SPA routing fix
-      // Store the current path and redirect to index.html
-      const currentPath = location.pathname;
-      let redirectPath = currentPath;
-
-      // If we're on GitHub Pages with a repository name, extract the app route
-      if (location.hostname.includes("github.io")) {
-        const segments = currentPath.split("/").filter(Boolean);
-        if (segments.length > 1) {
-          // Keep the repo name but get the app route
-          redirectPath = "/" + segments.slice(1).join("/");
-          sessionStorage.setItem("redirectPath", redirectPath);
-          location.replace("/" + segments[0] + "/");
-        } else {
-          sessionStorage.setItem("redirectPath", "/");
-          location.replace("/");
-        }
-      } else {
-        sessionStorage.setItem("redirectPath", currentPath);
-        location.replace("/");
-      }
-    </script>
-  </head>
-  <body>
-    Redirecting...
-  </body>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Coffee Masters</title>
+  <script>
+    // GitHub Pages SPA routing fix for root deployment
+    sessionStorage.setItem('redirectPath', location.pathname);
+    location.replace('/');
+  </script>
+</head>
+<body>
+  Redirecting...
+</body>
 </html>
