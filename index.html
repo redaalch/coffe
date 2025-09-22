@@ -24,41 +24,57 @@
           const hostname = location.hostname;
           const pathname = location.pathname;
 
+          console.log("Environment detection:", { hostname, pathname });
+
           // Local development (localhost, 127.0.0.1, etc.)
           if (
             hostname === "localhost" ||
             hostname === "127.0.0.1" ||
             hostname.startsWith("192.168.")
           ) {
+            console.log("Detected local development environment");
             return "";
           }
 
           // GitHub Pages with repository name
           if (hostname.includes("github.io") && pathname.startsWith("/coffe")) {
+            console.log("Detected GitHub Pages environment");
             return "/coffe";
           }
 
           // Default fallback
+          console.log("Using default fallback environment");
           return "";
         })(),
       };
 
+      console.log("APP_CONFIG initialized:", window.APP_CONFIG);
+
       // Helper function to get correct path
       window.getPath = function (relativePath) {
-        return (
-          window.APP_CONFIG.basePath + "/" + relativePath.replace(/^\/+/, "")
-        );
+        const fullPath =
+          window.APP_CONFIG.basePath + "/" + relativePath.replace(/^\/+/, "");
+        console.log(`getPath("${relativePath}") -> "${fullPath}"`);
+        return fullPath;
       };
     </script>
 
     <!-- Load main app script dynamically -->
     <script>
-      // Create and append the main app script with correct path
-      const appScript = document.createElement("script");
-      appScript.src = getPath("app.js");
-      appScript.type = "module";
-      appScript.defer = true;
-      document.head.appendChild(appScript);
+      // Wait for DOM to be ready, then load the app
+      document.addEventListener("DOMContentLoaded", function () {
+        console.log("DOM ready, loading app script...");
+        const appScript = document.createElement("script");
+        appScript.src = getPath("app.js");
+        appScript.type = "module";
+        appScript.onload = function () {
+          console.log("App script loaded successfully");
+        };
+        appScript.onerror = function (e) {
+          console.error("Failed to load app script:", e);
+        };
+        document.head.appendChild(appScript);
+      });
     </script>
 
     <link rel="stylesheet" id="main-styles" />
