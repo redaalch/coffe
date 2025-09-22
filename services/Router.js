@@ -52,6 +52,9 @@ const Router = {
       case "/profile":
         pageElement = document.createElement("profile-page");
         break;
+      case "/admin":
+        pageElement = document.createElement("admin-page");
+        break;
       default:
         if (route.startsWith("/product-")) {
           pageElement = document.createElement("details-page");
