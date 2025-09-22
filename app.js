@@ -35,6 +35,7 @@ async function initializeApp() {
     app.router.init();
     updateAuthUI();
     setupThemeToggle();
+    setupMobileNavigation();
     // Initialize cart counter with current cart items
     updateCartCounter();
 
@@ -59,13 +60,23 @@ window.addEventListener("appcartchange", (event) => {
 
 function updateCartCounter() {
   const badge = document.getElementById("badge");
+  const mobileBadge = document.getElementById("mobile-badge");
   const qty = app.store.cart.reduce((acc, item) => acc + item.quantity, 0);
-  badge.textContent = qty;
-  badge.hidden = qty == 0;
+
+  if (badge) {
+    badge.textContent = qty;
+    badge.hidden = qty == 0;
+  }
+
+  if (mobileBadge) {
+    mobileBadge.textContent = qty;
+    mobileBadge.hidden = qty == 0;
+  }
 }
 
 window.addEventListener("authchange", () => {
   updateAuthUI();
+  updateMobileAuthUI();
 });
 
 function updateAuthUI() {
@@ -92,10 +103,97 @@ function updateAuthUI() {
 
 function setupThemeToggle() {
   const themeToggle = document.getElementById("theme-toggle");
+  const mobileThemeToggle = document.getElementById("mobile-theme-toggle");
+
   if (themeToggle) {
     themeToggle.addEventListener("click", () => {
       app.theme.toggleTheme();
     });
+  }
+
+  if (mobileThemeToggle) {
+    mobileThemeToggle.addEventListener("click", () => {
+      app.theme.toggleTheme();
+    });
+  }
+}
+
+function setupMobileNavigation() {
+  const hamburgerToggle = document.getElementById("hamburger-toggle");
+  const mobileNav = document.getElementById("mobile-nav");
+  const mobileNavOverlay = document.getElementById("mobile-nav-overlay");
+  const mobileNavLinks = document.querySelectorAll(".mobile-nav .nav-item");
+
+  function toggleMobileNav() {
+    hamburgerToggle.classList.toggle("active");
+    mobileNav.classList.toggle("active");
+    mobileNavOverlay.classList.toggle("active");
+
+    // Prevent body scroll when menu is open
+    if (mobileNav.classList.contains("active")) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+  }
+
+  function closeMobileNav() {
+    hamburgerToggle.classList.remove("active");
+    mobileNav.classList.remove("active");
+    mobileNavOverlay.classList.remove("active");
+    document.body.style.overflow = "";
+  }
+
+  if (hamburgerToggle) {
+    hamburgerToggle.addEventListener("click", toggleMobileNav);
+  }
+
+  if (mobileNavOverlay) {
+    mobileNavOverlay.addEventListener("click", closeMobileNav);
+  }
+
+  // Close mobile nav when clicking on links (except theme toggle)
+  mobileNavLinks.forEach((link) => {
+    if (!link.id.includes("theme-toggle")) {
+      link.addEventListener("click", (e) => {
+        if (link.tagName === "A") {
+          closeMobileNav();
+          // Handle navigation
+          e.preventDefault();
+          const href = link.getAttribute("href");
+          app.router.go(href);
+        }
+      });
+    }
+  });
+
+  // Handle window resize
+  window.addEventListener("resize", () => {
+    if (window.innerWidth > 460) {
+      closeMobileNav();
+    }
+  });
+}
+
+function updateMobileAuthUI() {
+  const mobileAuthLink = document.getElementById("mobile-linkAuth");
+  const mobileProfileLink = document.getElementById("mobile-linkProfile");
+  const mobileAdminLink = document.getElementById("mobile-linkAdmin");
+
+  if (app.auth.isAuthenticated()) {
+    if (mobileAuthLink) mobileAuthLink.style.display = "none";
+    if (mobileProfileLink) mobileProfileLink.style.display = "flex";
+
+    // Show admin link only for admin users
+    if (app.auth.isAdmin()) {
+      if (mobileAdminLink) mobileAdminLink.style.display = "flex";
+    } else {
+      if (mobileAdminLink) mobileAdminLink.style.display = "none";
+    }
+  } else {
+    if (mobileAuthLink) mobileAuthLink.style.display = "flex";
+    if (mobileProfileLink) mobileProfileLink.style.display = "none";
+    if (mobileAdminLink) mobileAdminLink.style.display = "none";
   }
 }
 
