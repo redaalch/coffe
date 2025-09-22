@@ -424,8 +424,8 @@ class PWAManager {
     banner.className = "pwa-banner install-banner";
     banner.innerHTML = `
       <div class="banner-background"></div>
-      <div class="banner-content">
-        <div class="install-icon">
+      <div class="banner-content" role="banner" aria-label="Install Coffee Masters App">
+        <div class="install-icon" aria-hidden="true">
           <svg viewBox="0 0 24 24" width="32" height="32">
             <path fill="currentColor" d="M5,20H19V18H5M19,9H15V3H9V9H5L12,16L19,9Z"/>
           </svg>
@@ -435,12 +435,12 @@ class PWAManager {
           <p>Get the full app experience with offline support!</p>
         </div>
         <div class="banner-actions">
-          <button id="install-app" class="btn-install">
-            <span class="btn-icon">⬇️</span>
+          <button id="install-app" class="btn-install" aria-label="Install Coffee Masters App">
+            <span class="btn-icon" aria-hidden="true">⬇️</span>
             <span class="btn-text">Install</span>
             <div class="btn-shine"></div>
           </button>
-          <button id="dismiss-install" class="btn-dismiss-install">
+          <button id="dismiss-install" class="btn-dismiss-install" aria-label="Dismiss install prompt">
             <span class="btn-text">Later</span>
           </button>
         </div>
@@ -459,12 +459,31 @@ class PWAManager {
       overflow: hidden;
     `;
 
-    // Add comprehensive styles
+    // Add comprehensive styles with light/dark mode support
     const style = document.createElement("style");
     style.textContent = `
       .install-banner {
-        background: linear-gradient(135deg, #43281c 0%, #7f4f24 50%, #b08968 100%);
+        background: linear-gradient(135deg, 
+          var(--primaryColor, #43281c) 0%, 
+          var(--color3, #7f4f24) 50%, 
+          var(--color4, #b08968) 100%);
         position: relative;
+        border-top: 1px solid var(--border-color, #e0e0e0);
+        box-shadow: 0 -4px 20px var(--shadow, rgba(0, 0, 0, 0.1));
+      }
+
+      /* Light mode accessibility improvements */
+      :root .install-banner {
+        background: linear-gradient(135deg, 
+          var(--bg-color, #ffffff) 0%, 
+          var(--color6, #ede0d4) 50%, 
+          var(--color5, #ddb892) 100%);
+        border-top: 2px solid var(--primaryColor, #43281c);
+      }
+
+      [data-theme="dark"] .install-banner {
+        background: linear-gradient(135deg, #43281c 0%, #7f4f24 50%, #b08968 100%);
+        border-top: 1px solid var(--border-color, #555);
       }
 
       .install-banner .banner-background {
@@ -474,12 +493,20 @@ class PWAManager {
         right: 0;
         bottom: 0;
         background: 
+          radial-gradient(circle at 20% 50%, var(--color5, #ddb892) 0%, transparent 50%),
+          radial-gradient(circle at 80% 20%, var(--color6, #ede0d4) 0%, transparent 50%),
+          radial-gradient(circle at 40% 80%, var(--color4, #b08968) 0%, transparent 50%);
+        opacity: 0.15;
+        pointer-events: none;
+        z-index: 1;
+      }
+
+      [data-theme="dark"] .install-banner .banner-background {
+        background: 
           radial-gradient(circle at 20% 50%, rgba(221, 184, 146, 0.2) 0%, transparent 50%),
           radial-gradient(circle at 80% 20%, rgba(237, 224, 212, 0.3) 0%, transparent 50%),
           radial-gradient(circle at 40% 80%, rgba(176, 137, 104, 0.2) 0%, transparent 50%);
         opacity: 0.8;
-        pointer-events: none;
-        z-index: 1;
       }
 
       .install-banner .banner-content {
@@ -501,16 +528,32 @@ class PWAManager {
         display: flex;
         align-items: center;
         justify-content: center;
-        background: rgba(251, 242, 198, 0.2);
+        background: var(--primaryColor, #43281c);
         border-radius: 50%;
         animation: float 3s ease-in-out infinite;
-        box-shadow: 0 4px 20px rgba(67, 40, 28, 0.3);
+        box-shadow: 0 4px 20px var(--shadow, rgba(67, 40, 28, 0.3));
+        border: 2px solid var(--color3, #7f4f24);
+      }
+
+      /* Light mode icon styling */
+      :root .install-banner .install-icon {
+        background: var(--primaryColor, #43281c);
+        border: 2px solid var(--primaryColor, #43281c);
+        box-shadow: 0 2px 10px var(--shadow, rgba(67, 40, 28, 0.15));
+      }
+
+      [data-theme="dark"] .install-banner .install-icon {
+        background: rgba(251, 242, 198, 0.2);
         border: 2px solid rgba(251, 242, 198, 0.4);
       }
 
       .install-banner .install-icon svg {
+        color: var(--bg-color, #ffffff);
+        filter: drop-shadow(0 2px 4px var(--shadow, rgba(67, 40, 28, 0.4)));
+      }
+
+      [data-theme="dark"] .install-banner .install-icon svg {
         color: var(--highlight, #fbf2c6);
-        filter: drop-shadow(0 2px 4px rgba(67, 40, 28, 0.4));
       }
 
       @keyframes float {
@@ -520,6 +563,10 @@ class PWAManager {
 
       .install-banner .banner-text {
         flex: 1;
+        color: var(--text-color, #333);
+      }
+
+      [data-theme="dark"] .install-banner .banner-text {
         color: white;
       }
 
@@ -527,6 +574,10 @@ class PWAManager {
         margin: 0 0 0.5rem 0;
         font-size: 1.3rem;
         font-weight: 700;
+        color: var(--primaryColor, #43281c);
+      }
+
+      [data-theme="dark"] .install-banner .banner-text h3 {
         text-shadow: 0 2px 4px rgba(67, 40, 28, 0.5);
         background: linear-gradient(45deg, #fbf2c6, #ede0d4);
         -webkit-background-clip: text;
@@ -536,10 +587,15 @@ class PWAManager {
 
       .install-banner .banner-text p {
         margin: 0;
-        opacity: 0.95;
+        opacity: 0.9;
         font-size: 1rem;
+        color: var(--text-color, #333);
+      }
+
+      [data-theme="dark"] .install-banner .banner-text p {
         text-shadow: 0 1px 2px rgba(67, 40, 28, 0.3);
         color: #ede0d4;
+        opacity: 0.95;
       }
 
       .install-banner .banner-actions {
@@ -549,9 +605,9 @@ class PWAManager {
       }
 
       .install-banner .btn-install {
-        background: linear-gradient(135deg, #7f4f24 0%, #b08968 50%, #ddb892 100%);
+        background: linear-gradient(135deg, var(--primaryColor, #43281c) 0%, var(--color3, #7f4f24) 50%, var(--color4, #b08968) 100%);
         border: none;
-        color: white;
+        color: var(--bg-color, #ffffff);
         padding: 1rem 1.5rem;
         border-radius: 30px;
         font-weight: 700;
@@ -562,7 +618,7 @@ class PWAManager {
         gap: 0.5rem;
         transition: all 0.3s ease;
         box-shadow: 
-          0 6px 20px rgba(127, 79, 36, 0.4),
+          0 6px 20px var(--shadow, rgba(67, 40, 28, 0.2)),
           inset 0 1px 0 rgba(251, 242, 198, 0.3);
         position: relative;
         overflow: hidden;
@@ -571,6 +627,28 @@ class PWAManager {
         text-shadow: 0 1px 2px rgba(67, 40, 28, 0.3);
         pointer-events: auto;
         z-index: 10;
+        border: 2px solid transparent;
+      }
+
+      /* Light mode button accessibility */
+      :root .install-banner .btn-install {
+        background: var(--primaryColor, #43281c);
+        color: var(--bg-color, #ffffff);
+        border: 2px solid var(--primaryColor, #43281c);
+        box-shadow: 0 4px 15px var(--shadow, rgba(67, 40, 28, 0.15));
+      }
+
+      :root .install-banner .btn-install:hover {
+        background: var(--color3, #7f4f24);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px var(--shadow, rgba(67, 40, 28, 0.25));
+      }
+
+      [data-theme="dark"] .install-banner .btn-install {
+        background: linear-gradient(135deg, #7f4f24 0%, #b08968 50%, #ddb892 100%);
+        box-shadow: 
+          0 6px 20px rgba(127, 79, 36, 0.4),
+          inset 0 1px 0 rgba(251, 242, 198, 0.3);
       }
 
       .install-banner .btn-install::before {
@@ -611,9 +689,9 @@ class PWAManager {
       }
 
       .install-banner .btn-dismiss-install {
-        background: rgba(237, 224, 212, 0.15);
-        border: 2px solid rgba(237, 224, 212, 0.4);
-        color: #ede0d4;
+        background: transparent;
+        border: 2px solid var(--text-color, #333);
+        color: var(--text-color, #333);
         padding: 0.8rem 1.2rem;
         border-radius: 25px;
         cursor: pointer;
@@ -623,10 +701,29 @@ class PWAManager {
         text-transform: uppercase;
         letter-spacing: 0.3px;
         font-size: 0.9rem;
-        text-shadow: 0 1px 2px rgba(67, 40, 28, 0.3);
         pointer-events: auto;
         z-index: 10;
         position: relative;
+      }
+
+      /* Light mode dismiss button */
+      :root .install-banner .btn-dismiss-install {
+        background: transparent;
+        border: 2px solid var(--primaryColor, #43281c);
+        color: var(--primaryColor, #43281c);
+      }
+
+      :root .install-banner .btn-dismiss-install:hover {
+        background: var(--primaryColor, #43281c);
+        color: var(--bg-color, #ffffff);
+        transform: translateY(-1px);
+      }
+
+      [data-theme="dark"] .install-banner .btn-dismiss-install {
+        background: rgba(237, 224, 212, 0.15);
+        border: 2px solid rgba(237, 224, 212, 0.4);
+        color: #ede0d4;
+        text-shadow: 0 1px 2px rgba(67, 40, 28, 0.3);
       }
 
       .install-banner .btn-dismiss-install:hover {
@@ -792,8 +889,8 @@ class PWAManager {
     prompt.id = "notification-prompt";
     prompt.className = "pwa-banner notification-banner";
     prompt.innerHTML = `
-      <div class="banner-content">
-        <div class="notification-icon">
+      <div class="banner-content" role="banner" aria-label="Enable Notifications">
+        <div class="notification-icon" aria-hidden="true">
           <svg viewBox="0 0 24 24" width="32" height="32">
             <path fill="currentColor" d="M21,19V20H3V19L5,17V11C5,7.9 7.03,5.17 10,4.29C10,4.19 10,4.1 10,4A2,2 0 0,1 12,2A2,2 0 0,1 14,4C14,4.1 14,4.19 14,4.29C16.97,5.17 19,7.9 19,11V17L21,19M14,21A2,2 0 0,1 12,23A2,2 0 0,1 10,21"/>
           </svg>
@@ -803,11 +900,11 @@ class PWAManager {
           <p>Get notified when your coffee order is ready for pickup</p>
         </div>
         <div class="banner-actions">
-          <button id="enable-notifications" class="btn-enable">
-            <span class="btn-icon">🔔</span>
+          <button id="enable-notifications" class="btn-enable" aria-label="Enable notifications">
+            <span class="btn-icon" aria-hidden="true">🔔</span>
             <span class="btn-text">ENABLE NOTIFICATIONS</span>
           </button>
-          <button id="dismiss-notifications" class="btn-dismiss">
+          <button id="dismiss-notifications" class="btn-dismiss" aria-label="Dismiss notification prompt">
             <span class="btn-text">MAYBE LATER</span>
           </button>
         </div>
@@ -819,20 +916,33 @@ class PWAManager {
       top: 60px;
       left: 0;
       right: 0;
-      background: linear-gradient(135deg, #43281c 0%, #7f4f24 50%, #b08968 100%);
-      color: white;
+      background: linear-gradient(135deg, 
+        var(--bg-color, #ffffff) 0%, 
+        var(--color6, #ede0d4) 50%, 
+        var(--color5, #ddb892) 100%);
+      color: var(--text-color, #333);
       padding: 0;
       z-index: 1001;
       transform: translateY(-100%);
       transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-      box-shadow: 0 4px 20px rgba(67, 40, 28, 0.4);
+      box-shadow: 0 4px 20px var(--shadow, rgba(67, 40, 28, 0.2));
       backdrop-filter: blur(10px);
-      border-bottom: 1px solid rgba(251, 242, 198, 0.2);
+      border-bottom: 2px solid var(--primaryColor, #43281c);
+      border-top: 1px solid var(--border-color, #e0e0e0);
     `;
 
-    // Add comprehensive styles for notification banner
+    // Add comprehensive styles for notification banner with theme support
     const style = document.createElement("style");
     style.textContent = `
+      /* Dark mode notification banner override */
+      [data-theme="dark"] .notification-banner {
+        background: linear-gradient(135deg, #43281c 0%, #7f4f24 50%, #b08968 100%) !important;
+        color: white !important;
+        border-bottom: 1px solid rgba(251, 242, 198, 0.2) !important;
+        border-top: none !important;
+        box-shadow: 0 4px 20px rgba(67, 40, 28, 0.4) !important;
+      }
+
       .notification-banner .banner-content {
         display: flex;
         align-items: center;
@@ -849,16 +959,31 @@ class PWAManager {
         display: flex;
         align-items: center;
         justify-content: center;
-        background: rgba(251, 242, 198, 0.25);
+        background: var(--primaryColor, #43281c);
         border-radius: 50%;
         animation: bellShake 2s infinite;
+        border: 2px solid var(--color3, #7f4f24);
+        box-shadow: 0 2px 10px var(--shadow, rgba(67, 40, 28, 0.3));
+      }
+
+      /* Light mode notification icon */
+      :root .notification-banner .notification-icon {
+        background: var(--primaryColor, #43281c);
+        border: 2px solid var(--primaryColor, #43281c);
+      }
+
+      [data-theme="dark"] .notification-banner .notification-icon {
+        background: rgba(251, 242, 198, 0.25);
         border: 2px solid rgba(251, 242, 198, 0.3);
-        box-shadow: 0 2px 10px rgba(67, 40, 28, 0.3);
       }
 
       .notification-banner .notification-icon svg {
+        color: var(--bg-color, #ffffff);
+        filter: drop-shadow(0 1px 2px var(--shadow, rgba(67, 40, 28, 0.4)));
+      }
+
+      [data-theme="dark"] .notification-banner .notification-icon svg {
         color: var(--highlight, #fbf2c6);
-        filter: drop-shadow(0 1px 2px rgba(67, 40, 28, 0.4));
       }
 
       @keyframes bellShake {
@@ -875,6 +1000,10 @@ class PWAManager {
         margin: 0 0 0.25rem 0;
         font-size: 1.1rem;
         font-weight: 700;
+        color: var(--primaryColor, #43281c);
+      }
+
+      [data-theme="dark"] .notification-banner .banner-text h3 {
         text-shadow: 0 2px 4px rgba(67, 40, 28, 0.4);
         background: linear-gradient(45deg, #fbf2c6, #ede0d4);
         -webkit-background-clip: text;
@@ -884,8 +1013,13 @@ class PWAManager {
 
       .notification-banner .banner-text p {
         margin: 0;
-        opacity: 0.95;
+        opacity: 0.9;
         font-size: 0.9rem;
+        color: var(--text-color, #333);
+      }
+
+      [data-theme="dark"] .notification-banner .banner-text p {
+        opacity: 0.95;
         color: #ede0d4;
         text-shadow: 0 1px 2px rgba(67, 40, 28, 0.3);
       }
@@ -897,16 +1031,15 @@ class PWAManager {
       }
 
       .notification-banner .btn-enable {
-        background: linear-gradient(135deg, #43281c 0%, #7f4f24 100%);
-        border: 1px solid rgba(251, 242, 198, 0.6);
-        color: #fbf2c6;
+        background: var(--primaryColor, #43281c);
+        border: 2px solid var(--primaryColor, #43281c);
+        color: var(--bg-color, #ffffff);
         padding: 0.75rem 1.5rem;
         border-radius: 25px;
         cursor: pointer;
         transition: all 0.3s ease;
         font-weight: 600;
         backdrop-filter: blur(10px);
-        text-shadow: 0 1px 2px rgba(67, 40, 28, 0.4);
         text-transform: uppercase;
         letter-spacing: 0.3px;
         font-size: 0.85rem;
@@ -915,6 +1048,25 @@ class PWAManager {
         gap: 0.5rem;
         position: relative;
         overflow: hidden;
+      }
+
+      /* Light mode enable button */
+      :root .notification-banner .btn-enable {
+        background: var(--primaryColor, #43281c);
+        border: 2px solid var(--primaryColor, #43281c);
+        color: var(--bg-color, #ffffff);
+      }
+
+      :root .notification-banner .btn-enable:hover {
+        background: var(--color3, #7f4f24);
+        transform: translateY(-1px);
+      }
+
+      [data-theme="dark"] .notification-banner .btn-enable {
+        background: linear-gradient(135deg, #43281c 0%, #7f4f24 100%);
+        border: 1px solid rgba(251, 242, 198, 0.6);
+        color: #fbf2c6;
+        text-shadow: 0 1px 2px rgba(67, 40, 28, 0.4);
       }
 
       .notification-banner .btn-enable::before {
@@ -940,22 +1092,41 @@ class PWAManager {
       }
 
       .notification-banner .btn-dismiss {
-        background: rgba(237, 224, 212, 0.15);
-        border: 1px solid rgba(237, 224, 212, 0.4);
-        color: #ede0d4;
+        background: transparent;
+        border: 2px solid var(--text-color, #333);
+        color: var(--text-color, #333);
         padding: 0.75rem 1rem;
         border-radius: 20px;
         cursor: pointer;
         transition: all 0.3s ease;
         font-weight: 500;
         backdrop-filter: blur(10px);
-        text-shadow: 0 1px 2px rgba(67, 40, 28, 0.3);
         text-transform: uppercase;
         letter-spacing: 0.2px;
         font-size: 0.85rem;
       }
 
-      .notification-banner .btn-dismiss:hover {
+      /* Light mode dismiss button */
+      :root .notification-banner .btn-dismiss {
+        background: transparent;
+        border: 2px solid var(--primaryColor, #43281c);
+        color: var(--primaryColor, #43281c);
+      }
+
+      :root .notification-banner .btn-dismiss:hover {
+        background: var(--primaryColor, #43281c);
+        color: var(--bg-color, #ffffff);
+        transform: translateY(-1px);
+      }
+
+      [data-theme="dark"] .notification-banner .btn-dismiss {
+        background: rgba(237, 224, 212, 0.15);
+        border: 1px solid rgba(237, 224, 212, 0.4);
+        color: #ede0d4;
+        text-shadow: 0 1px 2px rgba(67, 40, 28, 0.3);
+      }
+
+      [data-theme="dark"] .notification-banner .btn-dismiss:hover {
         background: rgba(237, 224, 212, 0.25);
         border-color: rgba(251, 242, 198, 0.6);
         transform: translateY(-1px);
@@ -1089,8 +1260,8 @@ class PWAManager {
     updateBanner.id = "update-banner";
     updateBanner.className = "pwa-banner update-banner";
     updateBanner.innerHTML = `
-      <div class="banner-content">
-        <div class="update-icon">
+      <div class="banner-content" role="banner" aria-label="App Update Available">
+        <div class="update-icon" aria-hidden="true">
           <svg viewBox="0 0 24 24" width="24" height="24">
             <path fill="currentColor" d="M12,18A6,6 0 0,1 6,12C6,10.24 6.7,8.63 7.8,7.5L9,8.7C8.1,9.5 7.5,10.7 7.5,12A4.5,4.5 0 0,0 12,16.5A4.5,4.5 0 0,0 16.5,12C16.5,10.7 15.9,9.5 15,8.7L16.2,7.5C17.3,8.63 18,10.24 18,12A6,6 0 0,1 12,18M12,2A10,10 0 0,1 22,12A10,10 0 0,1 12,22A10,10 0 0,1 2,12A10,10 0 0,1 12,2M12,6A6,6 0 0,0 6,12H2L6,16L10,12H6A6,6 0 0,1 12,6V2L8,6L12,10V6Z"/>
           </svg>
@@ -1100,11 +1271,11 @@ class PWAManager {
           <p>New features and improvements are ready</p>
         </div>
         <div class="banner-actions">
-          <button id="update-app" class="btn-update">
-            <span class="btn-icon">⚡</span>
+          <button id="update-app" class="btn-update" aria-label="Update app now">
+            <span class="btn-icon" aria-hidden="true">⚡</span>
             <span class="btn-text">UPDATE NOW</span>
           </button>
-          <button id="dismiss-update" class="btn-dismiss">
+          <button id="dismiss-update" class="btn-dismiss" aria-label="Dismiss update prompt">
             <span class="btn-text">LATER</span>
           </button>
         </div>
@@ -1116,20 +1287,33 @@ class PWAManager {
       top: 60px;
       left: 0;
       right: 0;
-      background: linear-gradient(135deg, #43281c 0%, #7f4f24 50%, #b08968 100%);
-      color: white;
+      background: linear-gradient(135deg, 
+        var(--bg-color, #ffffff) 0%, 
+        var(--color6, #ede0d4) 50%, 
+        var(--color5, #ddb892) 100%);
+      color: var(--text-color, #333);
       padding: 0;
       z-index: 1001;
       transform: translateY(-100%);
       transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-      box-shadow: 0 4px 20px rgba(67, 40, 28, 0.4);
+      box-shadow: 0 4px 20px var(--shadow, rgba(67, 40, 28, 0.2));
       backdrop-filter: blur(10px);
-      border-bottom: 1px solid rgba(251, 242, 198, 0.2);
+      border-bottom: 2px solid var(--primaryColor, #43281c);
+      border-top: 1px solid var(--border-color, #e0e0e0);
     `;
 
-    // Add cool styles for the banner content
+    // Add comprehensive styles for update banner with theme support
     const style = document.createElement("style");
     style.textContent = `
+      /* Dark mode update banner override */
+      [data-theme="dark"] .update-banner {
+        background: linear-gradient(135deg, #43281c 0%, #7f4f24 50%, #b08968 100%) !important;
+        color: white !important;
+        border-bottom: 1px solid rgba(251, 242, 198, 0.2) !important;
+        border-top: none !important;
+        box-shadow: 0 4px 20px rgba(67, 40, 28, 0.4) !important;
+      }
+
       .update-banner .banner-content {
         display: flex;
         align-items: center;
@@ -1146,17 +1330,31 @@ class PWAManager {
         display: flex;
         align-items: center;
         justify-content: center;
-        background: rgba(251, 242, 198, 0.25);
+        background: var(--primaryColor, #43281c);
         border-radius: 50%;
         animation: pulse 2s infinite;
+        border: 2px solid var(--color3, #7f4f24);
+        box-shadow: 0 2px 10px var(--shadow, rgba(67, 40, 28, 0.3));
+      }
+
+      /* Light mode update icon */
+      :root .update-banner .update-icon {
+        background: var(--primaryColor, #43281c);
+        border: 2px solid var(--primaryColor, #43281c);
+      }
+
+      [data-theme="dark"] .update-banner .update-icon {
+        background: rgba(251, 242, 198, 0.25);
         border: 2px solid rgba(251, 242, 198, 0.3);
-        box-shadow: 0 2px 10px rgba(67, 40, 28, 0.3);
       }
 
       .update-banner .update-icon svg {
-        animation: rotate 3s linear infinite;
+        color: var(--bg-color, #ffffff);
+        filter: drop-shadow(0 1px 2px var(--shadow, rgba(67, 40, 28, 0.4)));
+      }
+
+      [data-theme="dark"] .update-banner .update-icon svg {
         color: var(--highlight, #fbf2c6);
-        filter: drop-shadow(0 1px 2px rgba(67, 40, 28, 0.4));
       }
 
       @keyframes pulse {
@@ -1177,6 +1375,10 @@ class PWAManager {
         margin: 0 0 0.25rem 0;
         font-size: 1.1rem;
         font-weight: 700;
+        color: var(--primaryColor, #43281c);
+      }
+
+      [data-theme="dark"] .update-banner .banner-text h3 {
         text-shadow: 0 2px 4px rgba(67, 40, 28, 0.4);
         background: linear-gradient(45deg, #fbf2c6, #ede0d4);
         -webkit-background-clip: text;
@@ -1186,8 +1388,13 @@ class PWAManager {
 
       .update-banner .banner-text p {
         margin: 0;
-        opacity: 0.95;
+        opacity: 0.9;
         font-size: 0.9rem;
+        color: var(--text-color, #333);
+      }
+
+      [data-theme="dark"] .update-banner .banner-text p {
+        opacity: 0.95;
         color: #ede0d4;
         text-shadow: 0 1px 2px rgba(67, 40, 28, 0.3);
       }
@@ -1199,11 +1406,39 @@ class PWAManager {
       }
 
       .update-banner .btn-update {
+        background: var(--primaryColor, #43281c);
+        border: 2px solid var(--primaryColor, #43281c);
+        color: var(--bg-color, #ffffff);
+        padding: 0.75rem 1.25rem;
+        border-radius: 25px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.3px;
+        font-size: 0.85rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      /* Light mode update button */
+      :root .update-banner .btn-update {
+        background: var(--primaryColor, #43281c);
+        border: 2px solid var(--primaryColor, #43281c);
+        color: var(--bg-color, #ffffff);
+      }
+
+      :root .update-banner .btn-update:hover {
+        background: var(--color3, #7f4f24);
+        transform: translateY(-1px);
+      }
+
+      [data-theme="dark"] .update-banner .btn-update {
         background: linear-gradient(135deg, #7f4f24 0%, #b08968 50%, #ddb892 100%);
         border: none;
         color: white;
-        padding: 0.75rem 1.25rem;
-        border-radius: 25px;
+      }
         font-weight: 600;
         cursor: pointer;
         display: flex;
@@ -1254,26 +1489,76 @@ class PWAManager {
       }
 
       .update-banner .btn-dismiss {
-        background: rgba(237, 224, 212, 0.15);
-        border: 1px solid rgba(237, 224, 212, 0.4);
-        color: #ede0d4;
+        background: transparent;
+        border: 2px solid var(--text-color, #333);
+        color: var(--text-color, #333);
         padding: 0.75rem 1rem;
         border-radius: 20px;
         cursor: pointer;
         transition: all 0.3s ease;
         font-weight: 500;
         backdrop-filter: blur(10px);
-        text-shadow: 0 1px 2px rgba(67, 40, 28, 0.3);
         text-transform: uppercase;
         letter-spacing: 0.2px;
         font-size: 0.85rem;
       }
 
-      .update-banner .btn-dismiss:hover {
+      /* Light mode dismiss button */
+      :root .update-banner .btn-dismiss {
+        background: transparent;
+        border: 2px solid var(--primaryColor, #43281c);
+        color: var(--primaryColor, #43281c);
+      }
+
+      :root .update-banner .btn-dismiss:hover {
+        background: var(--primaryColor, #43281c);
+        color: var(--bg-color, #ffffff);
+        transform: translateY(-1px);
+      }
+
+      [data-theme="dark"] .update-banner .btn-dismiss {
+        background: rgba(237, 224, 212, 0.15);
+        border: 1px solid rgba(237, 224, 212, 0.4);
+        color: #ede0d4;
+        text-shadow: 0 1px 2px rgba(67, 40, 28, 0.3);
+      }
+
+      [data-theme="dark"] .update-banner .btn-dismiss:hover {
         background: rgba(237, 224, 212, 0.25);
         border-color: rgba(251, 242, 198, 0.6);
         transform: translateY(-1px);
         box-shadow: 0 3px 10px rgba(67, 40, 28, 0.2);
+      }
+
+      /* Focus states for accessibility */
+      .pwa-banner button:focus {
+        outline: 3px solid var(--primaryColor, #43281c);
+        outline-offset: 2px;
+      }
+
+      [data-theme="dark"] .pwa-banner button:focus {
+        outline-color: var(--highlight, #fbf2c6);
+      }
+
+      /* High contrast mode support */
+      @media (prefers-contrast: high) {
+        .pwa-banner {
+          border: 3px solid var(--primaryColor, #43281c) !important;
+        }
+        
+        .pwa-banner button {
+          border-width: 3px !important;
+          font-weight: 700 !important;
+        }
+      }
+
+      /* Reduced motion support */
+      @media (prefers-reduced-motion: reduce) {
+        .pwa-banner,
+        .pwa-banner * {
+          animation: none !important;
+          transition: none !important;
+        }
       }
 
       @media (max-width: 480px) {
@@ -1292,6 +1577,7 @@ class PWAManager {
           justify-content: center;
           width: 100%;
         }
+      }
 
         .update-banner .btn-update,
         .update-banner .btn-dismiss {
