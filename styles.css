@@ -320,7 +320,7 @@ textarea:focus {
 
 /* Hamburger Menu Styles */
 .hamburger-menu {
-  display: block; /* Temporarily visible for testing */
+  display: none; /* Hidden by default on desktop */
   position: absolute;
   top: 10px;
   left: 10px;
