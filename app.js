@@ -86,16 +86,16 @@ function updateAuthUI() {
 
   if (app.auth.isAuthenticated()) {
     authLink.style.display = "none";
-    profileLink.style.display = "block";
+    profileLink.style.display = "flex";
 
     // Show admin link only for admin users
     if (app.auth.isAdmin()) {
-      adminLink.style.display = "block";
+      adminLink.style.display = "flex";
     } else {
       adminLink.style.display = "none";
     }
   } else {
-    authLink.style.display = "block";
+    authLink.style.display = "flex";
     profileLink.style.display = "none";
     adminLink.style.display = "none";
   }

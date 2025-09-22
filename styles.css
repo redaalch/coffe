@@ -206,6 +206,10 @@ button.navlink:active {
 
 /* Admin panel icon - ensure visibility in both themes */
 #linkAdmin {
+  display: none;
+  position: absolute;
+  top: 5px;
+  right: 5px;
   opacity: 1 !important;
   color: var(--text-color) !important;
 }
@@ -226,28 +230,28 @@ button.navlink:active {
   display: block;
   position: absolute;
   top: 5px;
-  right: 120px;
+  right: 160px;
 }
 
 #theme-toggle {
   display: block;
   position: absolute;
   top: 5px;
-  right: 80px;
+  right: 120px;
 }
 
 #linkProfile {
   display: none;
   position: absolute;
   top: 5px;
-  right: 40px;
+  right: 80px;
 }
 
 #linkAuth {
   display: block;
   position: absolute;
   top: 5px;
-  right: 5px;
+  right: 40px;
 }
 
 section.page {
