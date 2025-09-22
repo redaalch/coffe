@@ -73,6 +73,16 @@ class PWAManager {
       console.log("PWA: Install prompt available");
       e.preventDefault();
       this.deferredPrompt = e;
+
+      // Check if user dismissed install prompt recently
+      const dismissedTime = localStorage.getItem("pwa-install-dismissed");
+      const twoDaysInMs = 2 * 24 * 60 * 60 * 1000; // 2 days in milliseconds
+
+      if (dismissedTime && Date.now() - parseInt(dismissedTime) < twoDaysInMs) {
+        console.log("PWA: Install prompt was dismissed recently, not showing");
+        return;
+      }
+
       this.showInstallBanner();
     });
 
@@ -80,6 +90,7 @@ class PWAManager {
       console.log("PWA: App installed successfully");
       this.isInstalled = true;
       this.hideInstallBanner();
+      localStorage.removeItem("pwa-install-dismissed"); // Clear dismissed flag
       this.showInstalledMessage();
     });
   }
@@ -232,39 +243,264 @@ class PWAManager {
 
     const banner = document.createElement("div");
     banner.id = "install-banner";
-    banner.className = "pwa-banner";
+    banner.className = "pwa-banner install-banner";
     banner.innerHTML = `
       <div class="banner-content">
+        <div class="install-icon">
+          <svg viewBox="0 0 24 24" width="32" height="32">
+            <path fill="currentColor" d="M5,20H19V18H5M19,9H15V3H9V9H5L12,16L19,9Z"/>
+          </svg>
+        </div>
         <div class="banner-text">
-          <h3>Install Coffee Masters</h3>
+          <h3>📱 Install Coffee Masters</h3>
           <p>Get the full app experience with offline support!</p>
         </div>
         <div class="banner-actions">
-          <button id="install-app" class="btn-primary">Install</button>
-          <button id="dismiss-install" class="btn-secondary">Later</button>
+          <button id="install-app" class="btn-install">
+            <span class="btn-icon">⬇️</span>
+            <span class="btn-text">Install</span>
+            <div class="btn-shine"></div>
+          </button>
+          <button id="dismiss-install" class="btn-dismiss-install">
+            <span class="btn-text">Later</span>
+          </button>
         </div>
       </div>
+      <div class="banner-background"></div>
     `;
 
-    // Add styles
+    // Add cool styles
     banner.style.cssText = `
       position: fixed;
       bottom: 0;
       left: 0;
       right: 0;
-      background: var(--primaryColor);
-      color: white;
-      padding: 1rem;
       z-index: 1000;
       transform: translateY(100%);
-      transition: transform 0.3s ease;
+      transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+      overflow: hidden;
     `;
+
+    // Add comprehensive styles
+    const style = document.createElement("style");
+    style.textContent = `
+      .install-banner {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        position: relative;
+      }
+
+      .install-banner .banner-background {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: 
+          radial-gradient(circle at 20% 50%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
+          radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.3) 0%, transparent 50%),
+          radial-gradient(circle at 40% 80%, rgba(120, 199, 255, 0.3) 0%, transparent 50%);
+        opacity: 0.7;
+      }
+
+      .install-banner .banner-content {
+        position: relative;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        padding: 1.5rem;
+        max-width: 1200px;
+        margin: 0 auto;
+        backdrop-filter: blur(10px);
+      }
+
+      .install-banner .install-icon {
+        width: 50px;
+        height: 50px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(255,255,255,0.2);
+        border-radius: 50%;
+        animation: float 3s ease-in-out infinite;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+        border: 2px solid rgba(255,255,255,0.3);
+      }
+
+      .install-banner .install-icon svg {
+        color: white;
+        filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+      }
+
+      @keyframes float {
+        0%, 100% { transform: translateY(0px); }
+        50% { transform: translateY(-8px); }
+      }
+
+      .install-banner .banner-text {
+        flex: 1;
+        color: white;
+      }
+
+      .install-banner .banner-text h3 {
+        margin: 0 0 0.5rem 0;
+        font-size: 1.3rem;
+        font-weight: 700;
+        text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        background: linear-gradient(45deg, #fff, #f0f0f0);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+
+      .install-banner .banner-text p {
+        margin: 0;
+        opacity: 0.95;
+        font-size: 1rem;
+        text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+      }
+
+      .install-banner .banner-actions {
+        display: flex;
+        gap: 1rem;
+        align-items: center;
+      }
+
+      .install-banner .btn-install {
+        background: linear-gradient(135deg, #ff6b6b 0%, #ff8e53 50%, #ffad5a 100%);
+        border: none;
+        color: white;
+        padding: 1rem 1.5rem;
+        border-radius: 30px;
+        font-weight: 700;
+        font-size: 1rem;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        transition: all 0.3s ease;
+        box-shadow: 
+          0 6px 20px rgba(255, 107, 107, 0.4),
+          inset 0 1px 0 rgba(255,255,255,0.3);
+        position: relative;
+        overflow: hidden;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+
+      .install-banner .btn-install::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+        transition: left 0.6s;
+      }
+
+      .install-banner .btn-install:hover::before {
+        left: 100%;
+      }
+
+      .install-banner .btn-install:hover {
+        transform: translateY(-3px) scale(1.05);
+        box-shadow: 
+          0 8px 25px rgba(255, 107, 107, 0.6),
+          inset 0 1px 0 rgba(255,255,255,0.4);
+      }
+
+      .install-banner .btn-install:active {
+        transform: translateY(-1px) scale(1.02);
+      }
+
+      .install-banner .btn-install .btn-icon {
+        font-size: 1.2rem;
+        animation: bounce 2s infinite;
+      }
+
+      @keyframes bounce {
+        0%, 100% { transform: translateY(0); }
+        25% { transform: translateY(-4px); }
+        75% { transform: translateY(-2px); }
+      }
+
+      .install-banner .btn-dismiss-install {
+        background: rgba(255,255,255,0.15);
+        border: 2px solid rgba(255,255,255,0.3);
+        color: white;
+        padding: 0.8rem 1.2rem;
+        border-radius: 25px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-weight: 600;
+        backdrop-filter: blur(10px);
+        text-transform: uppercase;
+        letter-spacing: 0.3px;
+        font-size: 0.9rem;
+      }
+
+      .install-banner .btn-dismiss-install:hover {
+        background: rgba(255,255,255,0.25);
+        border-color: rgba(255,255,255,0.5);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+      }
+
+      .install-banner .btn-dismiss-install:active {
+        transform: translateY(0);
+      }
+
+      /* Mobile responsive */
+      @media (max-width: 480px) {
+        .install-banner .banner-content {
+          flex-direction: column;
+          text-align: center;
+          gap: 1rem;
+          padding: 1.5rem 1rem;
+        }
+
+        .install-banner .banner-text h3 {
+          font-size: 1.2rem;
+        }
+
+        .install-banner .banner-text p {
+          font-size: 0.9rem;
+        }
+
+        .install-banner .banner-actions {
+          justify-content: center;
+          width: 100%;
+          gap: 0.75rem;
+        }
+
+        .install-banner .btn-install,
+        .install-banner .btn-dismiss-install {
+          flex: 1;
+          justify-content: center;
+          min-width: 120px;
+        }
+
+        .install-banner .btn-install {
+          padding: 1rem 1.2rem;
+        }
+
+        .install-banner .btn-dismiss-install {
+          padding: 0.8rem 1rem;
+        }
+      }
+
+      /* Animation for showing banner */
+      .install-banner.show {
+        transform: translateY(0) !important;
+      }
+    `;
+    document.head.appendChild(style);
 
     document.body.appendChild(banner);
 
     // Show with animation
     setTimeout(() => {
-      banner.style.transform = "translateY(0)";
+      banner.classList.add("show");
     }, 100);
 
     // Event listeners
@@ -273,6 +509,8 @@ class PWAManager {
     });
 
     banner.querySelector("#dismiss-install").addEventListener("click", () => {
+      // Save dismiss time to localStorage
+      localStorage.setItem("pwa-install-dismissed", Date.now().toString());
       this.hideInstallBanner();
     });
   }
@@ -281,7 +519,16 @@ class PWAManager {
     const banner = document.getElementById("install-banner");
     if (banner) {
       banner.style.transform = "translateY(100%)";
-      setTimeout(() => banner.remove(), 300);
+      setTimeout(() => {
+        banner.remove();
+        // Clean up the styles
+        const styles = document.querySelectorAll("style");
+        styles.forEach((style) => {
+          if (style.textContent.includes(".install-banner")) {
+            style.remove();
+          }
+        });
+      }, 400);
     }
   }
 
