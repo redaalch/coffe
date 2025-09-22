@@ -70,24 +70,24 @@ class PWAManager {
       try {
         const basePath = window.APP_CONFIG ? window.APP_CONFIG.basePath : "";
 
-        // Use a more stable timestamp - only change every 5 minutes
-        const stableTimestamp = Math.floor(Date.now() / 300000) * 300000;
-        const swPath = basePath + "/serviceworker.js?v=" + stableTimestamp;
+        // Use static service worker path - let browser cache it properly
+        const swPath = basePath + "/serviceworker.js";
 
         const registration = await navigator.serviceWorker.register(swPath, {
           scope: basePath + "/",
-          updateViaCache: "none", // Don't cache the service worker file
+          updateViaCache: "imports", // Allow caching of service worker but check for updates
         });
-
         this.serviceWorkerRegistered = true; // Mark as registered
         console.log(
           "PWA: Service Worker registered successfully with cache-busting"
         );
 
-        // Don't force immediate activation - let user decide
+        // Don't show update banner immediately - only when there's a real update
         if (registration.waiting) {
-          console.log("PWA: Service worker waiting, showing update banner");
-          this.showUpdateAvailable();
+          console.log(
+            "PWA: Service worker waiting - will show update banner only if there's a real update"
+          );
+          // Don't automatically show banner here
         }
 
         // Check for updates less frequently
@@ -100,20 +100,28 @@ class PWAManager {
 
         // Listen for updates
         registration.addEventListener("updatefound", () => {
-          console.log("PWA: New service worker found, updating...");
+          console.log(
+            "PWA: New service worker found, checking if it's a real update..."
+          );
           const newWorker = registration.installing;
-          newWorker.addEventListener("statechange", () => {
-            if (newWorker.state === "installed") {
-              if (navigator.serviceWorker.controller) {
-                console.log(
-                  "PWA: New service worker installed, showing update prompt"
-                );
-                this.showUpdateAvailable();
-              } else {
-                console.log("PWA: Service worker installed for the first time");
+
+          if (newWorker) {
+            newWorker.addEventListener("statechange", () => {
+              if (newWorker.state === "installed") {
+                if (navigator.serviceWorker.controller) {
+                  console.log(
+                    "PWA: New service worker installed and there's an existing controller"
+                  );
+                  // Only show update banner if there's actually a controller (meaning this is an update, not first install)
+                  this.showUpdateAvailable();
+                } else {
+                  console.log(
+                    "PWA: Service worker installed for the first time - no update banner needed"
+                  );
+                }
               }
-            }
-          });
+            });
+          }
         });
 
         // Listen for cache update messages from service worker
