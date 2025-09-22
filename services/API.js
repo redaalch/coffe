@@ -13,7 +13,6 @@ const API = {
   },
   fetchMenu: async () => {
     const url = API.getUrl();
-    console.log("Fetching menu from:", url); // Debug log
     const result = await fetch(url);
     return await result.json();
   },

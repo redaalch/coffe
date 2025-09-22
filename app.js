@@ -20,18 +20,13 @@ app.auth = Auth;
 app.theme = ThemeManager;
 
 async function initializeApp() {
-  console.log("Starting app initialization...");
-  console.log("App config:", window.APP_CONFIG);
-
   try {
     await loadData();
-    console.log("Data loaded, initializing router...");
     app.router.init();
     updateAuthUI();
     setupThemeToggle();
     // Initialize cart counter with current cart items
     updateCartCounter();
-    console.log("App initialization complete!");
   } catch (error) {
     console.error("Error during app initialization:", error);
   }
