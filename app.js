@@ -219,25 +219,7 @@ function updateMobileAuthUI() {
 }
 
 function setupPWAEventListeners() {
-  // Handle online/offline events
-  window.addEventListener("online", () => {
-    console.log("App came online");
-    app.pwa.handleNetworkChange(true);
-  });
-
-  window.addEventListener("offline", () => {
-    console.log("App went offline");
-    app.pwa.handleNetworkChange(false);
-  });
-
-  // Handle app install events
-  window.addEventListener("beforeinstallprompt", (e) => {
-    app.pwa.handleInstallPrompt(e);
-  });
-
-  // Handle app installation
-  window.addEventListener("appinstalled", () => {
-    console.log("PWA was installed");
-    app.pwa.handleAppInstalled();
-  });
+  // PWA events (install, network, etc.) are handled internally by PWAManager
+  // This function is kept for compatibility but no longer needed
+  console.log("PWA: Event listeners are managed by PWAManager");
 }
