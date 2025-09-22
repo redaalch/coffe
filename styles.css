@@ -189,14 +189,34 @@ button.navlink {
   border-radius: 4px;
 }
 
+/* Dark mode override for navigation icons */
+[data-theme="dark"] a.navlink,
+[data-theme="dark"] button.navlink {
+  color: white;
+}
+
 a.navlink:hover,
 button.navlink:hover {
   background-color: var(--primaryColor);
-  color: var(--bg-color);
+  color: white;
   transform: scale(1.1);
   position: relative;
   z-index: 1;
   overflow: hidden;
+}
+
+/* Enhanced hover state for light mode */
+:root a.navlink:hover,
+:root button.navlink:hover {
+  background-color: var(--primaryColor);
+  color: white;
+}
+
+/* Dark mode hover state */
+[data-theme="dark"] a.navlink:hover,
+[data-theme="dark"] button.navlink:hover {
+  background-color: var(--primaryColor);
+  color: white;
 }
 
 a.navlink:active,
@@ -211,8 +231,13 @@ button.navlink:active {
   top: 5px !important;
   right: 5px !important;
   opacity: 1 !important;
-  color: var(--text-color) !important;
+  color: white !important;
   z-index: 1000 !important;
+}
+
+/* Dark mode admin icon color */
+[data-theme="dark"] #linkAdmin {
+  color: white !important;
 }
 
 /* Force admin icon to be visible when shown */
