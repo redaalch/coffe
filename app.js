@@ -87,7 +87,7 @@ function updateAuthUI() {
   console.log("Auth UI Update:", {
     isAuthenticated: app.auth.isAuthenticated(),
     isAdmin: app.auth.isAdmin(),
-    adminLinkExists: !!adminLink
+    adminLinkExists: !!adminLink,
   });
 
   if (app.auth.isAuthenticated()) {
