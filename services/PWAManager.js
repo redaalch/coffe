@@ -285,7 +285,7 @@ class PWAManager {
     const style = document.createElement("style");
     style.textContent = `
       .install-banner {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        background: linear-gradient(135deg, #43281c 0%, #7f4f24 50%, #b08968 100%);
         position: relative;
       }
 
@@ -296,10 +296,10 @@ class PWAManager {
         right: 0;
         bottom: 0;
         background: 
-          radial-gradient(circle at 20% 50%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
-          radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.3) 0%, transparent 50%),
-          radial-gradient(circle at 40% 80%, rgba(120, 199, 255, 0.3) 0%, transparent 50%);
-        opacity: 0.7;
+          radial-gradient(circle at 20% 50%, rgba(221, 184, 146, 0.2) 0%, transparent 50%),
+          radial-gradient(circle at 80% 20%, rgba(237, 224, 212, 0.3) 0%, transparent 50%),
+          radial-gradient(circle at 40% 80%, rgba(176, 137, 104, 0.2) 0%, transparent 50%);
+        opacity: 0.8;
       }
 
       .install-banner .banner-content {
@@ -319,16 +319,16 @@ class PWAManager {
         display: flex;
         align-items: center;
         justify-content: center;
-        background: rgba(255,255,255,0.2);
+        background: rgba(251, 242, 198, 0.2);
         border-radius: 50%;
         animation: float 3s ease-in-out infinite;
-        box-shadow: 0 4px 20px rgba(0,0,0,0.2);
-        border: 2px solid rgba(255,255,255,0.3);
+        box-shadow: 0 4px 20px rgba(67, 40, 28, 0.3);
+        border: 2px solid rgba(251, 242, 198, 0.4);
       }
 
       .install-banner .install-icon svg {
-        color: white;
-        filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+        color: var(--highlight, #fbf2c6);
+        filter: drop-shadow(0 2px 4px rgba(67, 40, 28, 0.4));
       }
 
       @keyframes float {
@@ -345,8 +345,8 @@ class PWAManager {
         margin: 0 0 0.5rem 0;
         font-size: 1.3rem;
         font-weight: 700;
-        text-shadow: 0 2px 4px rgba(0,0,0,0.3);
-        background: linear-gradient(45deg, #fff, #f0f0f0);
+        text-shadow: 0 2px 4px rgba(67, 40, 28, 0.5);
+        background: linear-gradient(45deg, #fbf2c6, #ede0d4);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         background-clip: text;
@@ -356,7 +356,8 @@ class PWAManager {
         margin: 0;
         opacity: 0.95;
         font-size: 1rem;
-        text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+        text-shadow: 0 1px 2px rgba(67, 40, 28, 0.3);
+        color: #ede0d4;
       }
 
       .install-banner .banner-actions {
@@ -366,7 +367,7 @@ class PWAManager {
       }
 
       .install-banner .btn-install {
-        background: linear-gradient(135deg, #ff6b6b 0%, #ff8e53 50%, #ffad5a 100%);
+        background: linear-gradient(135deg, #7f4f24 0%, #b08968 50%, #ddb892 100%);
         border: none;
         color: white;
         padding: 1rem 1.5rem;
@@ -379,12 +380,13 @@ class PWAManager {
         gap: 0.5rem;
         transition: all 0.3s ease;
         box-shadow: 
-          0 6px 20px rgba(255, 107, 107, 0.4),
-          inset 0 1px 0 rgba(255,255,255,0.3);
+          0 6px 20px rgba(127, 79, 36, 0.4),
+          inset 0 1px 0 rgba(251, 242, 198, 0.3);
         position: relative;
         overflow: hidden;
         text-transform: uppercase;
         letter-spacing: 0.5px;
+        text-shadow: 0 1px 2px rgba(67, 40, 28, 0.3);
       }
 
       .install-banner .btn-install::before {
@@ -394,7 +396,7 @@ class PWAManager {
         left: -100%;
         width: 100%;
         height: 100%;
-        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+        background: linear-gradient(90deg, transparent, rgba(251, 242, 198, 0.4), transparent);
         transition: left 0.6s;
       }
 
@@ -405,8 +407,8 @@ class PWAManager {
       .install-banner .btn-install:hover {
         transform: translateY(-3px) scale(1.05);
         box-shadow: 
-          0 8px 25px rgba(255, 107, 107, 0.6),
-          inset 0 1px 0 rgba(255,255,255,0.4);
+          0 8px 25px rgba(127, 79, 36, 0.6),
+          inset 0 1px 0 rgba(251, 242, 198, 0.4);
       }
 
       .install-banner .btn-install:active {
@@ -425,9 +427,9 @@ class PWAManager {
       }
 
       .install-banner .btn-dismiss-install {
-        background: rgba(255,255,255,0.15);
-        border: 2px solid rgba(255,255,255,0.3);
-        color: white;
+        background: rgba(237, 224, 212, 0.15);
+        border: 2px solid rgba(237, 224, 212, 0.4);
+        color: #ede0d4;
         padding: 0.8rem 1.2rem;
         border-radius: 25px;
         cursor: pointer;
@@ -437,13 +439,14 @@ class PWAManager {
         text-transform: uppercase;
         letter-spacing: 0.3px;
         font-size: 0.9rem;
+        text-shadow: 0 1px 2px rgba(67, 40, 28, 0.3);
       }
 
       .install-banner .btn-dismiss-install:hover {
-        background: rgba(255,255,255,0.25);
-        border-color: rgba(255,255,255,0.5);
+        background: rgba(237, 224, 212, 0.25);
+        border-color: rgba(251, 242, 198, 0.6);
         transform: translateY(-2px);
-        box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        box-shadow: 0 4px 15px rgba(67, 40, 28, 0.3);
       }
 
       .install-banner .btn-dismiss-install:active {
