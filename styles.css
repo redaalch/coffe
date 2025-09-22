@@ -175,7 +175,7 @@ ul {
 
 a.navlink,
 button.navlink {
-  color: var(--text-color);
+  color: white;
   padding: 8px;
   text-decoration: none;
   background: none;
@@ -320,7 +320,7 @@ textarea:focus {
 
 /* Hamburger Menu Styles */
 .hamburger-menu {
-  display: none;
+  display: block; /* Temporarily visible for testing */
   position: absolute;
   top: 10px;
   left: 10px;
@@ -385,7 +385,7 @@ body.dark-theme .hamburger-line {
 
 /* Mobile Navigation */
 .mobile-nav {
-  display: none;
+  display: block; /* Temporarily visible for testing */
   position: fixed;
   top: 0;
   left: -100%;
@@ -401,19 +401,28 @@ body.dark-theme .hamburger-line {
 
 .mobile-nav-close {
   position: absolute;
-  top: 15px;
-  right: 15px;
-  background: none;
-  border: none;
+  top: 12px;
+  right: 12px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
   color: var(--text-color);
-  font-size: 24px;
+  font-size: 20px;
   cursor: pointer;
-  padding: 5px;
+  padding: 8px;
   z-index: 1003;
+  border-radius: 50%;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
 }
 
 .mobile-nav-close:hover {
-  color: var(--primaryColor);
+  background: var(--primaryColor);
+  color: white;
+  transform: scale(1.1);
 }
 
 .mobile-nav.active {
