@@ -1,7 +1,13 @@
 import API from "./API.js";
 
 export async function loadData() {
-  app.store.menu = await API.fetchMenu();
+  console.log("Starting to load menu data...");
+  try {
+    app.store.menu = await API.fetchMenu();
+    console.log("Menu data loaded successfully:", app.store.menu);
+  } catch (error) {
+    console.error("Failed to load menu data:", error);
+  }
 }
 export async function getProductById(id) {
   if (app.store.menu == null) {
