@@ -27,8 +27,10 @@ const Router = {
   },
   go: (route, addToHistory = true) => {
     // Debug logging
-    console.log(`Router.go called with route: ${route}, addToHistory: ${addToHistory}`);
-    
+    console.log(
+      `Router.go called with route: ${route}, addToHistory: ${addToHistory}`
+    );
+
     if (addToHistory) {
       // Add base path when updating history
       const fullPath = Router.basePath + route;
