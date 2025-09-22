@@ -15,11 +15,62 @@
       rel="stylesheet"
       href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0"
     />
-    <script src="/coffe/app.js" defer type="module"></script>
-    <link rel="stylesheet" href="/coffe/styles.css" />
-    <link rel="manifest" href="/coffe/app.webmanifest" />
-    <link rel="apple-touch-icon" href="/coffe/images/icons/icon.png" />
-    <link rel="icon" href="/coffe/images/icons/icon.png" />
+
+    <!-- Dynamic path configuration for local and GitHub Pages -->
+    <script>
+      // Detect deployment environment and set base path
+      window.APP_CONFIG = {
+        basePath: (() => {
+          const hostname = location.hostname;
+          const pathname = location.pathname;
+
+          // Local development (localhost, 127.0.0.1, etc.)
+          if (
+            hostname === "localhost" ||
+            hostname === "127.0.0.1" ||
+            hostname.startsWith("192.168.")
+          ) {
+            return "";
+          }
+
+          // GitHub Pages with repository name
+          if (hostname.includes("github.io") && pathname.startsWith("/coffe")) {
+            return "/coffe";
+          }
+
+          // Default fallback
+          return "";
+        })(),
+      };
+
+      // Helper function to get correct path
+      window.getPath = function (relativePath) {
+        return (
+          window.APP_CONFIG.basePath + "/" + relativePath.replace(/^\/+/, "")
+        );
+      };
+    </script>
+
+    <script type="module">
+      // Load main app with correct path
+      import(getPath("app.js"));
+    </script>
+    <link rel="stylesheet" id="main-styles" />
+    <link rel="manifest" id="app-manifest" />
+    <link rel="apple-touch-icon" id="apple-icon" />
+    <link rel="icon" id="favicon" />
+
+    <script>
+      // Set up all resource paths dynamically
+      document.getElementById("main-styles").href = getPath("styles.css");
+      document.getElementById("app-manifest").href = getPath("app.webmanifest");
+      document.getElementById("apple-icon").href = getPath(
+        "images/icons/icon.png"
+      );
+      document.getElementById("favicon").href = getPath(
+        "images/icons/icon.png"
+      );
+    </script>
 
     <!-- GitHub Pages SPA routing fix -->
     <script>
@@ -37,7 +88,10 @@
   <body>
     <header>
       <h1>
-        <img src="/coffe/images/logo.svg" width="140" alt="Coffee Masters" />
+        <img id="logo-img" width="140" alt="Coffee Masters" />
+        <script>
+          document.getElementById("logo-img").src = getPath("images/logo.svg");
+        </script>
       </h1>
       <nav>
         <a class="navlink material-symbols-outlined" id="linkHome" href="/">

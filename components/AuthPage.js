@@ -8,7 +8,10 @@ export class AuthPage extends HTMLElement {
     this.root.appendChild(section);
 
     async function loadCSS() {
-      const request = await fetch("/coffe/components/AuthPage.css");
+      const cssPath = window.getPath
+        ? window.getPath("components/AuthPage.css")
+        : "/components/AuthPage.css";
+      const request = await fetch(cssPath);
       styles.textContent = await request.text();
     }
     loadCSS();

@@ -8,7 +8,10 @@ export class ProfilePage extends HTMLElement {
     this.root.appendChild(section);
 
     async function loadCSS() {
-      const request = await fetch("/coffe/components/ProfilePage.css");
+      const cssPath = window.getPath
+        ? window.getPath("components/ProfilePage.css")
+        : "/components/ProfilePage.css";
+      const request = await fetch(cssPath);
       styles.textContent = await request.text();
     }
     loadCSS();
