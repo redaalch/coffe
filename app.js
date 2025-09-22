@@ -90,6 +90,12 @@ function updateAuthUI() {
     adminLinkExists: !!adminLink,
   });
 
+  // TEMPORARY DEBUG: Force show admin icon to test positioning
+  if (adminLink) {
+    adminLink.style.setProperty("display", "flex", "important");
+    console.log("TEMP: Forcing admin icon visible for testing");
+  }
+
   if (app.auth.isAuthenticated()) {
     authLink.style.display = "none";
     profileLink.style.display = "flex";
@@ -97,7 +103,7 @@ function updateAuthUI() {
     // Show admin link only for admin users
     if (app.auth.isAdmin()) {
       console.log("Setting admin link to visible");
-      adminLink.style.display = "flex";
+      adminLink.style.setProperty("display", "flex", "important");
     } else {
       adminLink.style.display = "none";
     }
