@@ -285,6 +285,7 @@ class PWAManager {
     banner.id = "install-banner";
     banner.className = "pwa-banner install-banner";
     banner.innerHTML = `
+      <div class="banner-background"></div>
       <div class="banner-content">
         <div class="install-icon">
           <svg viewBox="0 0 24 24" width="32" height="32">
@@ -306,7 +307,6 @@ class PWAManager {
           </button>
         </div>
       </div>
-      <div class="banner-background"></div>
     `;
 
     // Add cool styles
@@ -340,10 +340,13 @@ class PWAManager {
           radial-gradient(circle at 80% 20%, rgba(237, 224, 212, 0.3) 0%, transparent 50%),
           radial-gradient(circle at 40% 80%, rgba(176, 137, 104, 0.2) 0%, transparent 50%);
         opacity: 0.8;
+        pointer-events: none;
+        z-index: 1;
       }
 
       .install-banner .banner-content {
         position: relative;
+        z-index: 2;
         display: flex;
         align-items: center;
         gap: 1rem;
@@ -351,6 +354,7 @@ class PWAManager {
         max-width: 1200px;
         margin: 0 auto;
         backdrop-filter: blur(10px);
+        pointer-events: auto;
       }
 
       .install-banner .install-icon {
@@ -427,6 +431,8 @@ class PWAManager {
         text-transform: uppercase;
         letter-spacing: 0.5px;
         text-shadow: 0 1px 2px rgba(67, 40, 28, 0.3);
+        pointer-events: auto;
+        z-index: 10;
       }
 
       .install-banner .btn-install::before {
@@ -480,6 +486,9 @@ class PWAManager {
         letter-spacing: 0.3px;
         font-size: 0.9rem;
         text-shadow: 0 1px 2px rgba(67, 40, 28, 0.3);
+        pointer-events: auto;
+        z-index: 10;
+        position: relative;
       }
 
       .install-banner .btn-dismiss-install:hover {
@@ -546,17 +555,34 @@ class PWAManager {
       banner.classList.add("show");
     }, 100);
 
+    // Add debugging click test
+    banner.addEventListener("click", (e) => {
+      console.log("Banner clicked at:", e.target.tagName, e.target.id, e.target.className);
+    });
+
     // Event listeners with more robust approach
     const installBtn = banner.querySelector("#install-app");
     const dismissBtn = banner.querySelector("#dismiss-install");
 
+    console.log("PWA: Looking for buttons...", { installBtn: !!installBtn, dismissBtn: !!dismissBtn });
+
     if (installBtn) {
+      // Add multiple event types for testing
       installBtn.addEventListener("click", (e) => {
         e.preventDefault();
         e.stopPropagation();
-        console.log("Install button clicked");
+        console.log("Install button clicked - Click event");
         this.promptInstall();
       });
+      
+      installBtn.addEventListener("touchstart", (e) => {
+        console.log("Install button touched - Touch event");
+      });
+      
+      // Make sure the button is visible and clickable
+      installBtn.style.pointerEvents = "auto";
+      installBtn.style.zIndex = "100";
+      
       console.log("PWA: Install button event listener attached");
     } else {
       console.error("PWA: Install button not found!");
@@ -566,11 +592,20 @@ class PWAManager {
       dismissBtn.addEventListener("click", (e) => {
         e.preventDefault();
         e.stopPropagation();
-        console.log("Dismiss button clicked");
+        console.log("Dismiss button clicked - Click event");
         // Save dismiss time to localStorage
         localStorage.setItem("pwa-install-dismissed", Date.now().toString());
         this.hideInstallBanner();
       });
+      
+      dismissBtn.addEventListener("touchstart", (e) => {
+        console.log("Dismiss button touched - Touch event");
+      });
+      
+      // Make sure the button is visible and clickable
+      dismissBtn.style.pointerEvents = "auto";
+      dismissBtn.style.zIndex = "100";
+      
       console.log("PWA: Dismiss button event listener attached");
     } else {
       console.error("PWA: Dismiss button not found!");
