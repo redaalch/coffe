@@ -84,12 +84,19 @@ function updateAuthUI() {
   const profileLink = document.getElementById("linkProfile");
   const adminLink = document.getElementById("linkAdmin");
 
+  console.log("Auth UI Update:", {
+    isAuthenticated: app.auth.isAuthenticated(),
+    isAdmin: app.auth.isAdmin(),
+    adminLinkExists: !!adminLink
+  });
+
   if (app.auth.isAuthenticated()) {
     authLink.style.display = "none";
     profileLink.style.display = "flex";
 
     // Show admin link only for admin users
     if (app.auth.isAdmin()) {
+      console.log("Setting admin link to visible");
       adminLink.style.display = "flex";
     } else {
       adminLink.style.display = "none";
