@@ -18,8 +18,9 @@ app.store = Store;
 app.router = Router;
 app.auth = Auth;
 app.theme = ThemeManager;
-window.addEventListener("DOMContentLoaded", async () => {
-  console.log("DOM Content Loaded - Starting app initialization...");
+
+async function initializeApp() {
+  console.log("Starting app initialization...");
   console.log("App config:", window.APP_CONFIG);
 
   try {
@@ -34,7 +35,15 @@ window.addEventListener("DOMContentLoaded", async () => {
   } catch (error) {
     console.error("Error during app initialization:", error);
   }
-});
+}
+
+// Check if DOM is already loaded or wait for it
+if (document.readyState === "loading") {
+  window.addEventListener("DOMContentLoaded", initializeApp);
+} else {
+  // DOM is already loaded, initialize immediately
+  initializeApp();
+}
 
 window.addEventListener("appcartchange", (event) => {
   updateCartCounter();
