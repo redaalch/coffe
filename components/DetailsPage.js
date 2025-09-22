@@ -13,7 +13,10 @@ export class DetailsPage extends HTMLElement {
     this.root.appendChild(styles);
 
     async function loadCSS() {
-      const request = await fetch("/coffe/components/DetailsPage.css");
+      const cssPath = window.getPath
+        ? window.getPath("components/DetailsPage.css")
+        : "/components/DetailsPage.css";
+      const request = await fetch(cssPath);
       styles.textContent = await request.text();
     }
     loadCSS();

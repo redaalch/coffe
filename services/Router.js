@@ -1,6 +1,8 @@
 const Router = {
-  // Base path for GitHub Pages repository deployment
-  basePath: "/coffe",
+  // Dynamic base path for GitHub Pages repository deployment
+  get basePath() {
+    return window.APP_CONFIG ? window.APP_CONFIG.basePath : "";
+  },
 
   init: () => {
     document.querySelectorAll("a.navlink").forEach((a) => {
