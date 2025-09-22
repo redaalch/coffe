@@ -557,14 +557,22 @@ class PWAManager {
 
     // Add debugging click test
     banner.addEventListener("click", (e) => {
-      console.log("Banner clicked at:", e.target.tagName, e.target.id, e.target.className);
+      console.log(
+        "Banner clicked at:",
+        e.target.tagName,
+        e.target.id,
+        e.target.className
+      );
     });
 
     // Event listeners with more robust approach
     const installBtn = banner.querySelector("#install-app");
     const dismissBtn = banner.querySelector("#dismiss-install");
 
-    console.log("PWA: Looking for buttons...", { installBtn: !!installBtn, dismissBtn: !!dismissBtn });
+    console.log("PWA: Looking for buttons...", {
+      installBtn: !!installBtn,
+      dismissBtn: !!dismissBtn,
+    });
 
     if (installBtn) {
       // Add multiple event types for testing
@@ -574,15 +582,15 @@ class PWAManager {
         console.log("Install button clicked - Click event");
         this.promptInstall();
       });
-      
+
       installBtn.addEventListener("touchstart", (e) => {
         console.log("Install button touched - Touch event");
       });
-      
+
       // Make sure the button is visible and clickable
       installBtn.style.pointerEvents = "auto";
       installBtn.style.zIndex = "100";
-      
+
       console.log("PWA: Install button event listener attached");
     } else {
       console.error("PWA: Install button not found!");
@@ -597,15 +605,15 @@ class PWAManager {
         localStorage.setItem("pwa-install-dismissed", Date.now().toString());
         this.hideInstallBanner();
       });
-      
+
       dismissBtn.addEventListener("touchstart", (e) => {
         console.log("Dismiss button touched - Touch event");
       });
-      
+
       // Make sure the button is visible and clickable
       dismissBtn.style.pointerEvents = "auto";
       dismissBtn.style.zIndex = "100";
-      
+
       console.log("PWA: Dismiss button event listener attached");
     } else {
       console.error("PWA: Dismiss button not found!");
