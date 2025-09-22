@@ -16,6 +16,39 @@ class PWAManager {
     this.setupNotifications();
     this.checkInstallStatus();
     this.setupBackgroundSync();
+    
+    // Add aggressive update checking
+    this.setupVersionChecking();
+  }
+
+  setupVersionChecking() {
+    // Check for updates on page focus
+    window.addEventListener("focus", () => {
+      console.log("PWA: Page focused, checking for updates...");
+      this.checkForUpdates();
+    });
+
+    // Check for updates periodically
+    setInterval(() => {
+      this.checkForUpdates();
+    }, 60000); // Check every minute
+
+    // Check for updates on page load
+    setTimeout(() => {
+      this.checkForUpdates();
+    }, 5000); // Check 5 seconds after load
+  }
+
+  async checkForUpdates() {
+    if ("serviceWorker" in navigator && navigator.serviceWorker.controller) {
+      try {
+        const registration = await navigator.serviceWorker.ready;
+        await registration.update();
+        console.log("PWA: Update check completed");
+      } catch (error) {
+        console.log("PWA: Update check failed:", error);
+      }
+    }
   }
 
   // Service Worker Registration
@@ -23,23 +56,43 @@ class PWAManager {
     if ("serviceWorker" in navigator) {
       try {
         const basePath = window.APP_CONFIG ? window.APP_CONFIG.basePath : "";
-        const swPath = basePath + "/serviceworker.js";
+        // Add cache-busting parameter to service worker URL
+        const timestamp = Date.now();
+        const swPath = basePath + "/serviceworker.js?v=" + timestamp;
 
         const registration = await navigator.serviceWorker.register(swPath, {
           scope: basePath + "/",
+          updateViaCache: "none", // Don't cache the service worker file
         });
 
-        console.log("PWA: Service Worker registered successfully");
+        console.log("PWA: Service Worker registered successfully with cache-busting");
+
+        // Force immediate update check
+        if (registration.waiting) {
+          console.log("PWA: Service worker waiting, forcing activation");
+          registration.waiting.postMessage({ type: "SKIP_WAITING" });
+        }
+
+        // Check for updates more frequently
+        setInterval(() => {
+          console.log("PWA: Checking for service worker updates...");
+          registration.update().catch(err => {
+            console.log("PWA: Update check failed:", err);
+          });
+        }, 30000); // Check every 30 seconds
 
         // Listen for updates
         registration.addEventListener("updatefound", () => {
+          console.log("PWA: New service worker found, updating...");
           const newWorker = registration.installing;
           newWorker.addEventListener("statechange", () => {
-            if (
-              newWorker.state === "installed" &&
-              navigator.serviceWorker.controller
-            ) {
-              this.showUpdateAvailable();
+            if (newWorker.state === "installed") {
+              if (navigator.serviceWorker.controller) {
+                console.log("PWA: New service worker installed, showing update prompt");
+                this.showUpdateAvailable();
+              } else {
+                console.log("PWA: Service worker installed for the first time");
+              }
             }
           });
         });
@@ -53,6 +106,17 @@ class PWAManager {
               window.location.reload(true);
             }, 100);
           }
+          
+          if (event.data && event.data.type === "SW_UPDATED") {
+            console.log("PWA: Service worker updated, reloading...");
+            window.location.reload(true);
+          }
+        });
+
+        // Handle controller change (when new SW takes control)
+        navigator.serviceWorker.addEventListener("controllerchange", () => {
+          console.log("PWA: Service worker controller changed, reloading...");
+          window.location.reload(true);
         });
 
         // Store registration for push notifications

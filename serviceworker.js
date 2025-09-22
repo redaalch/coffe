@@ -7,6 +7,20 @@ const STATIC_CACHE = "coffee-masters-static-" + CACHE_VERSION;
 const DYNAMIC_CACHE = "coffee-masters-dynamic-" + CACHE_VERSION;
 const API_CACHE = "coffee-masters-api-" + CACHE_VERSION;
 
+// Handle messages from main thread
+self.addEventListener("message", (event) => {
+  console.log("Service Worker: Received message:", event.data);
+  
+  if (event.data && event.data.type === "SKIP_WAITING") {
+    console.log("Service Worker: Forcing skip waiting");
+    self.skipWaiting();
+  }
+  
+  if (event.data && event.data.type === "GET_VERSION") {
+    event.ports[0].postMessage({ version: CACHE_VERSION });
+  }
+});
+
 // Assets to cache immediately
 const STATIC_ASSETS = [
   "/",
@@ -137,20 +151,19 @@ self.addEventListener("activate", (event) => {
 
         await Promise.all(deletePromises);
 
-        // Clear all caches and force refresh on version change
-        if (deletePromises.length > 0) {
-          console.log("Service Worker: Cleared old caches, forcing refresh");
-          // Notify all clients to refresh
-          const clients = await self.clients.matchAll();
-          clients.forEach((client) => {
-            client.postMessage({ type: "CACHE_UPDATED" });
-          });
-        }
-
         // Claim clients immediately
         await self.clients.claim();
 
-        console.log("Service Worker: Activated successfully");
+        // Notify all clients that service worker has been updated
+        const clients = await self.clients.matchAll();
+        clients.forEach((client) => {
+          if (deletePromises.length > 0) {
+            client.postMessage({ type: "CACHE_UPDATED" });
+          }
+          client.postMessage({ type: "SW_UPDATED", version: CACHE_VERSION });
+        });
+
+        console.log("Service Worker: Activated successfully with version:", CACHE_VERSION);
       } catch (error) {
         console.error("Service Worker: Error during activation:", error);
       }
