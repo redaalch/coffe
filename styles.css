@@ -107,10 +107,41 @@ body > header {
   position: fixed;
   width: 100%;
   top: 0;
-  z-index: 1000;
+  z-index: 9999;
   animation: slideIn 0.5s ease-out;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   background-color: var(--bg-color);
+  overflow: hidden;
+}
+
+/* Prevent tooltips from appearing above header */
+header [title]:hover::after,
+header [title]:hover::before {
+  display: none !important;
+}
+
+/* Prevent all tooltips in header area */
+header *:hover::after,
+header *:hover::before,
+header *[title]:hover::after,
+header *[title]:hover::before {
+  display: none !important;
+}
+
+/* Disable browser tooltips completely for header navigation */
+header .navlink,
+header .navlink * {
+  pointer-events: auto;
+}
+
+header .navlink:hover {
+  position: relative;
+  z-index: 1;
+}
+
+/* Custom tooltip styling if needed */
+header .navlink {
+  position: relative;
 }
 
 body > main {
@@ -163,6 +194,9 @@ button.navlink:hover {
   background-color: var(--primaryColor);
   color: var(--bg-color);
   transform: scale(1.1);
+  position: relative;
+  z-index: 1;
+  overflow: hidden;
 }
 
 a.navlink:active,
