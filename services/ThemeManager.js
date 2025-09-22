@@ -3,6 +3,11 @@ class ThemeManager {
     this.currentTheme = this.loadTheme();
     this.applyTheme(this.currentTheme);
     this.setupEventListeners();
+
+    // Ensure theme toggles are updated after DOM is ready
+    document.addEventListener("DOMContentLoaded", () => {
+      setTimeout(() => this.updateThemeToggle(), 100);
+    });
   }
 
   loadTheme() {
@@ -38,6 +43,11 @@ class ThemeManager {
     const newTheme = this.currentTheme === "light" ? "dark" : "light";
     this.saveTheme(newTheme);
     this.applyTheme(newTheme);
+
+    // Force immediate update
+    setTimeout(() => {
+      this.updateThemeToggle();
+    }, 50);
   }
 
   setupEventListeners() {
@@ -57,12 +67,45 @@ class ThemeManager {
   }
 
   updateThemeToggle() {
+    // Update desktop theme toggle
     const themeToggle = document.getElementById("theme-toggle");
+
     if (themeToggle) {
-      const icon = themeToggle.querySelector(".material-symbols-outlined");
-      if (icon) {
-        icon.textContent =
+      // Check if it has the material-symbols-outlined class directly
+      if (themeToggle.classList.contains("material-symbols-outlined")) {
+        const newIcon =
           this.currentTheme === "light" ? "dark_mode" : "light_mode";
+        themeToggle.textContent = newIcon;
+      } else {
+        // Look for nested icon element
+        const icon = themeToggle.querySelector(".material-symbols-outlined");
+
+        if (icon) {
+          const newIcon =
+            this.currentTheme === "light" ? "dark_mode" : "light_mode";
+          icon.textContent = newIcon;
+        }
+      }
+    }
+
+    // Update mobile theme toggle
+    const mobileThemeToggle = document.getElementById("mobile-theme-toggle");
+    if (mobileThemeToggle) {
+      const icon = mobileThemeToggle.querySelector(
+        ".material-symbols-outlined"
+      );
+      const text = mobileThemeToggle.querySelector(".nav-text");
+
+      if (icon && text) {
+        if (this.currentTheme === "light") {
+          // Currently in light mode, show dark mode option
+          icon.textContent = "dark_mode";
+          text.textContent = "Dark Mode";
+        } else {
+          // Currently in dark mode, show light mode option
+          icon.textContent = "wb_sunny";
+          text.textContent = "Light Mode";
+        }
       }
     }
   }
