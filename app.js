@@ -123,12 +123,14 @@ function setupMobileNavigation() {
   const hamburgerToggle = document.getElementById("hamburger-toggle");
   const mobileNav = document.getElementById("mobile-nav");
   const mobileNavOverlay = document.getElementById("mobile-nav-overlay");
+  const mobileNavClose = document.getElementById("mobile-nav-close");
   const mobileNavLinks = document.querySelectorAll(".mobile-nav .nav-item");
 
   console.log("Elements found:", {
     hamburgerToggle: !!hamburgerToggle,
     mobileNav: !!mobileNav,
     mobileNavOverlay: !!mobileNavOverlay,
+    mobileNavClose: !!mobileNavClose,
     mobileNavLinks: mobileNavLinks.length,
   });
 
@@ -165,6 +167,10 @@ function setupMobileNavigation() {
 
   if (mobileNavOverlay) {
     mobileNavOverlay.addEventListener("click", closeMobileNav);
+  }
+
+  if (mobileNavClose) {
+    mobileNavClose.addEventListener("click", closeMobileNav);
   }
 
   // Close mobile nav when clicking on links (except theme toggle)

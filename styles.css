@@ -286,7 +286,7 @@ textarea:focus {
 
 /* Hamburger Menu Styles */
 .hamburger-menu {
-  display: block; /* Force visible for testing */
+  display: none;
   position: absolute;
   top: 15px;
   left: 15px;
@@ -327,7 +327,7 @@ textarea:focus {
 
 /* Mobile Navigation */
 .mobile-nav {
-  display: block; /* Force visible for testing */
+  display: none;
   position: fixed;
   top: 0;
   left: -100%;
@@ -335,18 +335,37 @@ textarea:focus {
   height: 100vh;
   background-color: var(--bg-color);
   box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
-  z-index: 1001;
+  z-index: 1002;
   transition: left 0.3s ease;
   padding-top: 80px;
   overflow-y: auto;
 }
 
+.mobile-nav-close {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background: none;
+  border: none;
+  color: var(--text-color);
+  font-size: 24px;
+  cursor: pointer;
+  padding: 5px;
+  z-index: 1003;
+}
+
+.mobile-nav-close:hover {
+  color: var(--primaryColor);
+}
+
 .mobile-nav.active {
   left: 0 !important;
+  transform: translateX(0) !important;
+  visibility: visible !important;
 }
 
 .mobile-nav-overlay {
-  display: block; /* Force visible for testing */
+  display: none;
   position: fixed;
   top: 0;
   left: 0;
@@ -372,6 +391,11 @@ textarea:focus {
   text-decoration: none;
   border-bottom: 1px solid var(--border-color);
   transition: all 0.3s ease;
+  background: none;
+  border: none;
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
 }
 
 .mobile-nav .nav-item:hover {
@@ -417,7 +441,12 @@ textarea:focus {
 
   /* Show mobile navigation */
   .mobile-nav {
-    display: block;
+    display: block !important;
+    left: -100% !important;
+  }
+
+  .mobile-nav.active {
+    left: 0 !important;
   }
 
   .mobile-nav-overlay {
