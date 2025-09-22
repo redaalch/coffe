@@ -96,8 +96,11 @@ class PWAManager {
   }
 
   async promptInstall() {
-    console.log("PWA: promptInstall called, deferredPrompt:", !!this.deferredPrompt);
-    
+    console.log(
+      "PWA: promptInstall called, deferredPrompt:",
+      !!this.deferredPrompt
+    );
+
     if (!this.deferredPrompt) {
       console.log("PWA: Install prompt not available, hiding banner");
       this.hideInstallBanner();
@@ -141,14 +144,14 @@ class PWAManager {
       z-index: 1000;
       text-align: center;
     `;
-    
+
     instructions.innerHTML = `
       <p>To install: Tap the browser menu (⋮) and select "Add to Home Screen" or "Install App"</p>
       <button onclick="this.parentElement.remove()" style="background: rgba(237,224,212,0.2); border: 1px solid rgba(237,224,212,0.4); color: #ede0d4; padding: 0.5rem 1rem; border-radius: 15px; margin-top: 0.5rem;">Got it</button>
     `;
-    
+
     document.body.appendChild(instructions);
-    
+
     setTimeout(() => {
       if (instructions.parentElement) {
         instructions.remove();
@@ -543,18 +546,35 @@ class PWAManager {
       banner.classList.add("show");
     }, 100);
 
-    // Event listeners
-    banner.querySelector("#install-app").addEventListener("click", () => {
-      console.log("Install button clicked");
-      this.promptInstall();
-    });
+    // Event listeners with more robust approach
+    const installBtn = banner.querySelector("#install-app");
+    const dismissBtn = banner.querySelector("#dismiss-install");
 
-    banner.querySelector("#dismiss-install").addEventListener("click", () => {
-      console.log("Dismiss button clicked");
-      // Save dismiss time to localStorage
-      localStorage.setItem("pwa-install-dismissed", Date.now().toString());
-      this.hideInstallBanner();
-    });
+    if (installBtn) {
+      installBtn.addEventListener("click", (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        console.log("Install button clicked");
+        this.promptInstall();
+      });
+      console.log("PWA: Install button event listener attached");
+    } else {
+      console.error("PWA: Install button not found!");
+    }
+
+    if (dismissBtn) {
+      dismissBtn.addEventListener("click", (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        console.log("Dismiss button clicked");
+        // Save dismiss time to localStorage
+        localStorage.setItem("pwa-install-dismissed", Date.now().toString());
+        this.hideInstallBanner();
+      });
+      console.log("PWA: Dismiss button event listener attached");
+    } else {
+      console.error("PWA: Dismiss button not found!");
+    }
   }
 
   hideInstallBanner() {
