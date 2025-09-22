@@ -46,6 +46,7 @@ export class AdminPage extends HTMLElement {
             <button class="nav-btn" data-section="menu">Menu Management</button>
             <button class="nav-btn" data-section="orders">Orders</button>
             <button class="nav-btn" data-section="analytics">Analytics</button>
+            <button class="nav-btn" data-section="pwa-status">PWA Status</button>
             <button class="nav-btn" data-section="settings">Settings</button>
           </div>
         </header>
@@ -146,6 +147,11 @@ export class AdminPage extends HTMLElement {
               <h3>Detailed Sales Report</h3>
               <div id="sales-report-table"></div>
             </div>
+          </section>
+
+          <!-- PWA Status Section -->
+          <section id="pwa-status" class="admin-section">
+            <pwa-status-page></pwa-status-page>
           </section>
 
           <!-- Settings Section -->
