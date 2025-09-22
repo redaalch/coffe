@@ -5,38 +5,51 @@ class PWAManager {
     this.isOnline = navigator.onLine;
     this.isInstalled = false;
     this.notificationPermission = "default";
+    this.serviceWorkerRegistered = false; // Prevent multiple registrations
+    this.initialized = false; // Prevent multiple initializations
 
-    this.init();
+    // Don't auto-initialize in constructor
   }
 
   async init() {
-    await this.registerServiceWorker();
+    if (this.initialized) {
+      console.log("PWA: Already initialized, skipping");
+      return;
+    }
+
+    this.initialized = true;
+    console.log("PWA: Initializing...");
+
+    if (!this.serviceWorkerRegistered) {
+      await this.registerServiceWorker();
+    }
     this.setupInstallPrompt();
     this.setupNetworkDetection();
     this.setupNotifications();
     this.checkInstallStatus();
     this.setupBackgroundSync();
-    
-    // Add aggressive update checking
+
+    // Add less aggressive update checking
     this.setupVersionChecking();
   }
 
   setupVersionChecking() {
-    // Check for updates on page focus
+    // Check for updates on page focus (less frequently)
+    let lastFocusCheck = 0;
     window.addEventListener("focus", () => {
-      console.log("PWA: Page focused, checking for updates...");
-      this.checkForUpdates();
+      const now = Date.now();
+      if (now - lastFocusCheck > 300000) {
+        // Only check every 5 minutes
+        console.log("PWA: Page focused, checking for updates...");
+        lastFocusCheck = now;
+        this.checkForUpdates();
+      }
     });
 
-    // Check for updates periodically
+    // Check for updates less frequently
     setInterval(() => {
       this.checkForUpdates();
-    }, 60000); // Check every minute
-
-    // Check for updates on page load
-    setTimeout(() => {
-      this.checkForUpdates();
-    }, 5000); // Check 5 seconds after load
+    }, 300000); // Check every 5 minutes instead of 1 minute
   }
 
   async checkForUpdates() {
@@ -53,33 +66,37 @@ class PWAManager {
 
   // Service Worker Registration
   async registerServiceWorker() {
-    if ("serviceWorker" in navigator) {
+    if ("serviceWorker" in navigator && !this.serviceWorkerRegistered) {
       try {
         const basePath = window.APP_CONFIG ? window.APP_CONFIG.basePath : "";
-        // Add cache-busting parameter to service worker URL
-        const timestamp = Date.now();
-        const swPath = basePath + "/serviceworker.js?v=" + timestamp;
+
+        // Use a more stable timestamp - only change every 5 minutes
+        const stableTimestamp = Math.floor(Date.now() / 300000) * 300000;
+        const swPath = basePath + "/serviceworker.js?v=" + stableTimestamp;
 
         const registration = await navigator.serviceWorker.register(swPath, {
           scope: basePath + "/",
           updateViaCache: "none", // Don't cache the service worker file
         });
 
-        console.log("PWA: Service Worker registered successfully with cache-busting");
+        this.serviceWorkerRegistered = true; // Mark as registered
+        console.log(
+          "PWA: Service Worker registered successfully with cache-busting"
+        );
 
-        // Force immediate update check
+        // Don't force immediate activation - let user decide
         if (registration.waiting) {
-          console.log("PWA: Service worker waiting, forcing activation");
-          registration.waiting.postMessage({ type: "SKIP_WAITING" });
+          console.log("PWA: Service worker waiting, showing update banner");
+          this.showUpdateAvailable();
         }
 
-        // Check for updates more frequently
+        // Check for updates less frequently
         setInterval(() => {
-          console.log("PWA: Checking for service worker updates...");
-          registration.update().catch(err => {
+          console.log("PWA: Periodic service worker update check...");
+          registration.update().catch((err) => {
             console.log("PWA: Update check failed:", err);
           });
-        }, 30000); // Check every 30 seconds
+        }, 600000); // Check every 10 minutes instead of 30 seconds
 
         // Listen for updates
         registration.addEventListener("updatefound", () => {
@@ -88,7 +105,9 @@ class PWAManager {
           newWorker.addEventListener("statechange", () => {
             if (newWorker.state === "installed") {
               if (navigator.serviceWorker.controller) {
-                console.log("PWA: New service worker installed, showing update prompt");
+                console.log(
+                  "PWA: New service worker installed, showing update prompt"
+                );
                 this.showUpdateAvailable();
               } else {
                 console.log("PWA: Service worker installed for the first time");
@@ -100,23 +119,20 @@ class PWAManager {
         // Listen for cache update messages from service worker
         navigator.serviceWorker.addEventListener("message", (event) => {
           if (event.data && event.data.type === "CACHE_UPDATED") {
-            console.log("PWA: Cache updated, refreshing page...");
-            // Small delay to allow service worker to finish cleanup
-            setTimeout(() => {
-              window.location.reload(true);
-            }, 100);
+            console.log("PWA: Cache updated by user action");
+            // Only reload if user requested update
           }
-          
+
           if (event.data && event.data.type === "SW_UPDATED") {
-            console.log("PWA: Service worker updated, reloading...");
-            window.location.reload(true);
+            console.log("PWA: Service worker updated by user action");
+            // Only reload if user requested update
           }
         });
 
         // Handle controller change (when new SW takes control)
         navigator.serviceWorker.addEventListener("controllerchange", () => {
-          console.log("PWA: Service worker controller changed, reloading...");
-          window.location.reload(true);
+          console.log("PWA: Service worker controller changed");
+          // Don't auto-reload, let user decide
         });
 
         // Store registration for push notifications
@@ -834,15 +850,15 @@ class PWAManager {
       top: 0;
       left: 0;
       right: 0;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      background: linear-gradient(135deg, #43281c 0%, #7f4f24 50%, #b08968 100%);
       color: white;
       padding: 0;
       z-index: 1000;
       transform: translateY(-100%);
       transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-      box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+      box-shadow: 0 4px 20px rgba(67, 40, 28, 0.4);
       backdrop-filter: blur(10px);
-      border-bottom: 1px solid rgba(255,255,255,0.1);
+      border-bottom: 1px solid rgba(251, 242, 198, 0.2);
     `;
 
     // Add cool styles for the banner content
@@ -855,6 +871,7 @@ class PWAManager {
         padding: 1rem 1.5rem;
         max-width: 1200px;
         margin: 0 auto;
+        position: relative;
       }
 
       .update-banner .update-icon {
@@ -863,13 +880,17 @@ class PWAManager {
         display: flex;
         align-items: center;
         justify-content: center;
-        background: rgba(255,255,255,0.2);
+        background: rgba(251, 242, 198, 0.25);
         border-radius: 50%;
         animation: pulse 2s infinite;
+        border: 2px solid rgba(251, 242, 198, 0.3);
+        box-shadow: 0 2px 10px rgba(67, 40, 28, 0.3);
       }
 
       .update-banner .update-icon svg {
         animation: rotate 3s linear infinite;
+        color: var(--highlight, #fbf2c6);
+        filter: drop-shadow(0 1px 2px rgba(67, 40, 28, 0.4));
       }
 
       @keyframes pulse {
@@ -889,14 +910,20 @@ class PWAManager {
       .update-banner .banner-text h3 {
         margin: 0 0 0.25rem 0;
         font-size: 1.1rem;
-        font-weight: 600;
-        text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+        font-weight: 700;
+        text-shadow: 0 2px 4px rgba(67, 40, 28, 0.4);
+        background: linear-gradient(45deg, #fbf2c6, #ede0d4);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
       }
 
       .update-banner .banner-text p {
         margin: 0;
-        opacity: 0.9;
+        opacity: 0.95;
         font-size: 0.9rem;
+        color: #ede0d4;
+        text-shadow: 0 1px 2px rgba(67, 40, 28, 0.3);
       }
 
       .update-banner .banner-actions {
@@ -906,7 +933,7 @@ class PWAManager {
       }
 
       .update-banner .btn-update {
-        background: linear-gradient(45deg, #ff6b6b, #ff8e53);
+        background: linear-gradient(135deg, #7f4f24 0%, #b08968 50%, #ddb892 100%);
         border: none;
         color: white;
         padding: 0.75rem 1.25rem;
@@ -917,9 +944,13 @@ class PWAManager {
         align-items: center;
         gap: 0.5rem;
         transition: all 0.3s ease;
-        box-shadow: 0 4px 15px rgba(255, 107, 107, 0.4);
+        box-shadow: 0 4px 15px rgba(127, 79, 36, 0.4);
         position: relative;
         overflow: hidden;
+        text-shadow: 0 1px 2px rgba(67, 40, 28, 0.3);
+        text-transform: uppercase;
+        letter-spacing: 0.3px;
+        font-size: 0.9rem;
       }
 
       .update-banner .btn-update::before {
@@ -929,7 +960,7 @@ class PWAManager {
         left: -100%;
         width: 100%;
         height: 100%;
-        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+        background: linear-gradient(90deg, transparent, rgba(251, 242, 198, 0.3), transparent);
         transition: left 0.6s;
       }
 
@@ -939,7 +970,7 @@ class PWAManager {
 
       .update-banner .btn-update:hover {
         transform: translateY(-2px);
-        box-shadow: 0 6px 20px rgba(255, 107, 107, 0.6);
+        box-shadow: 0 6px 20px rgba(127, 79, 36, 0.6);
       }
 
       .update-banner .btn-update:active {
@@ -957,20 +988,26 @@ class PWAManager {
       }
 
       .update-banner .btn-dismiss {
-        background: rgba(255,255,255,0.1);
-        border: 1px solid rgba(255,255,255,0.3);
-        color: white;
+        background: rgba(237, 224, 212, 0.15);
+        border: 1px solid rgba(237, 224, 212, 0.4);
+        color: #ede0d4;
         padding: 0.75rem 1rem;
         border-radius: 20px;
         cursor: pointer;
         transition: all 0.3s ease;
         font-weight: 500;
         backdrop-filter: blur(10px);
+        text-shadow: 0 1px 2px rgba(67, 40, 28, 0.3);
+        text-transform: uppercase;
+        letter-spacing: 0.2px;
+        font-size: 0.85rem;
       }
 
       .update-banner .btn-dismiss:hover {
-        background: rgba(255,255,255,0.2);
+        background: rgba(237, 224, 212, 0.25);
+        border-color: rgba(251, 242, 198, 0.6);
         transform: translateY(-1px);
+        box-shadow: 0 3px 10px rgba(67, 40, 28, 0.2);
       }
 
       @media (max-width: 480px) {
@@ -1001,17 +1038,28 @@ class PWAManager {
       updateBanner.style.transform = "translateY(0)";
     }, 100);
 
-    updateBanner.querySelector("#update-app").addEventListener("click", () => {
-      const btn = updateBanner.querySelector("#update-app");
-      btn.innerHTML = `
+    updateBanner
+      .querySelector("#update-app")
+      .addEventListener("click", async () => {
+        const btn = updateBanner.querySelector("#update-app");
+        btn.innerHTML = `
         <span class="btn-icon">⏳</span>
         <span class="btn-text">Updating...</span>
       `;
-      btn.style.pointerEvents = "none";
-      setTimeout(() => {
-        window.location.reload();
-      }, 500);
-    });
+        btn.style.pointerEvents = "none";
+
+        // Send message to service worker to skip waiting and activate
+        if (navigator.serviceWorker.controller) {
+          navigator.serviceWorker.controller.postMessage({
+            type: "SKIP_WAITING",
+          });
+        }
+
+        // Wait a bit for service worker to activate, then reload
+        setTimeout(() => {
+          window.location.reload();
+        }, 1000);
+      });
 
     updateBanner
       .querySelector("#dismiss-update")
