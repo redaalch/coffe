@@ -20,6 +20,18 @@
     <link rel="manifest" href="app.webmanifest" />
     <link rel="apple-touch-icon" href="images/icons/icon.png" />
     <link rel="icon" href="images/icons/icon.png" />
+    
+    <!-- GitHub Pages SPA routing fix -->
+    <script>
+      // Check if we were redirected from 404.html
+      (function() {
+        var redirectPath = sessionStorage.getItem('redirectPath');
+        if (redirectPath) {
+          sessionStorage.removeItem('redirectPath');
+          history.replaceState(null, null, redirectPath);
+        }
+      })();
+    </script>
   </head>
 
   <body>

@@ -1,4 +1,15 @@
 const Router = {
+  // GitHub Pages base path detection
+  basePath: (() => {
+    const path = location.pathname;
+    // If we're on GitHub Pages with a repository name
+    if (location.hostname.includes('github.io') && path !== '/') {
+      const segments = path.split('/').filter(Boolean);
+      return segments.length > 0 ? `/${segments[0]}` : '';
+    }
+    return '';
+  })(),
+  
   init: () => {
     document.querySelectorAll("a.navlink").forEach((a) => {
       a.addEventListener("click", (event) => {
@@ -11,12 +22,18 @@ const Router = {
       Router.go(event.state?.route || location.pathname, false);
     });
     // Handle initial load - get the current path and route to it
-    const currentPath = location.pathname;
+    let currentPath = location.pathname;
+    // Remove base path for routing
+    if (Router.basePath && currentPath.startsWith(Router.basePath)) {
+      currentPath = currentPath.substring(Router.basePath.length) || '/';
+    }
     Router.go(currentPath);
   },
   go: (route, addToHistory = true) => {
     if (addToHistory) {
-      history.pushState({ route }, "", route);
+      // Add base path when updating history
+      const fullPath = Router.basePath + route;
+      history.pushState({ route }, "", fullPath);
     }
     let pageElement = null;
     switch (route) {
