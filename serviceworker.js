@@ -1,7 +1,7 @@
 // Coffee Masters PWA Service Worker
 // Version 2.1 - Enhanced with automatic cache busting and updates
 
-const CACHE_VERSION = "v2.1-" + new Date().getTime(); // Dynamic version based on timestamp
+const CACHE_VERSION = "v2.1.2"; // Static version - only change when there are actual updates
 const CACHE_NAME = "coffee-masters-" + CACHE_VERSION;
 const STATIC_CACHE = "coffee-masters-static-" + CACHE_VERSION;
 const DYNAMIC_CACHE = "coffee-masters-dynamic-" + CACHE_VERSION;
