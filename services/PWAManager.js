@@ -819,6 +819,13 @@ class PWAManager {
   }
 
   showUpdateAvailable() {
+    // Prevent multiple banners
+    const existingBanner = document.getElementById("update-banner");
+    if (existingBanner) {
+      console.log("PWA: Update banner already displayed");
+      return;
+    }
+
     const updateBanner = document.createElement("div");
     updateBanner.id = "update-banner";
     updateBanner.className = "pwa-banner update-banner";
@@ -836,10 +843,10 @@ class PWAManager {
         <div class="banner-actions">
           <button id="update-app" class="btn-update">
             <span class="btn-icon">⚡</span>
-            <span class="btn-text">Update Now</span>
+            <span class="btn-text">UPDATE NOW</span>
           </button>
           <button id="dismiss-update" class="btn-dismiss">
-            <span class="btn-text">Later</span>
+            <span class="btn-text">LATER</span>
           </button>
         </div>
       </div>
@@ -847,13 +854,13 @@ class PWAManager {
 
     updateBanner.style.cssText = `
       position: fixed;
-      top: 0;
+      top: 60px;
       left: 0;
       right: 0;
       background: linear-gradient(135deg, #43281c 0%, #7f4f24 50%, #b08968 100%);
       color: white;
       padding: 0;
-      z-index: 1000;
+      z-index: 1001;
       transform: translateY(-100%);
       transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
       box-shadow: 0 4px 20px rgba(67, 40, 28, 0.4);
@@ -1011,6 +1018,10 @@ class PWAManager {
       }
 
       @media (max-width: 480px) {
+        .update-banner {
+          top: 50px !important;
+        }
+        
         .update-banner .banner-content {
           flex-direction: column;
           text-align: center;
