@@ -297,7 +297,7 @@ class PWAManager {
 
   // Check if enough time has passed since user dismissed notification prompt
   shouldShowNotificationPrompt() {
-    const dismissedTime = localStorage.getItem('pwa-notification-dismissed');
+    const dismissedTime = localStorage.getItem("pwa-notification-dismissed");
     if (!dismissedTime) {
       return true; // First time, show the prompt
     }
@@ -305,15 +305,23 @@ class PWAManager {
     const dismissedDate = new Date(parseInt(dismissedTime));
     const now = new Date();
     const daysSinceDismissed = (now - dismissedDate) / (1000 * 60 * 60 * 24);
-    
+
     // Show again after 2 days
     const delayDays = 2;
-    
+
     if (daysSinceDismissed >= delayDays) {
-      console.log(`PWA: ${delayDays} days passed since notification dismissed, showing prompt again`);
+      console.log(
+        `PWA: ${delayDays} days passed since notification dismissed, showing prompt again`
+      );
       return true;
     } else {
-      console.log(`PWA: Only ${Math.floor(daysSinceDismissed)} days since notification dismissed, waiting ${delayDays - Math.floor(daysSinceDismissed)} more days`);
+      console.log(
+        `PWA: Only ${Math.floor(
+          daysSinceDismissed
+        )} days since notification dismissed, waiting ${
+          delayDays - Math.floor(daysSinceDismissed)
+        } more days`
+      );
       return false;
     }
   }
@@ -321,14 +329,16 @@ class PWAManager {
   // Mark that user dismissed the notification prompt
   markNotificationPromptDismissed() {
     const now = new Date().getTime();
-    localStorage.setItem('pwa-notification-dismissed', now.toString());
-    console.log('PWA: Notification prompt dismissed, will show again in 2 days');
+    localStorage.setItem("pwa-notification-dismissed", now.toString());
+    console.log(
+      "PWA: Notification prompt dismissed, will show again in 2 days"
+    );
   }
 
   // Clear the dismissal timestamp (for testing or when permission is granted)
   clearNotificationDismissal() {
-    localStorage.removeItem('pwa-notification-dismissed');
-    console.log('PWA: Notification dismissal cleared');
+    localStorage.removeItem("pwa-notification-dismissed");
+    console.log("PWA: Notification dismissal cleared");
   }
 
   async requestNotificationPermission() {
@@ -1001,7 +1011,7 @@ class PWAManager {
       .addEventListener("click", () => {
         // Mark that user dismissed the notification prompt
         this.markNotificationPromptDismissed();
-        
+
         prompt.style.transform = "translateY(-100%)";
         setTimeout(() => {
           prompt.remove();
@@ -1430,28 +1440,28 @@ class PWAManager {
 
   // Testing/Debug methods
   forceShowNotificationPrompt() {
-    console.log('PWA: Forcing notification prompt display');
+    console.log("PWA: Forcing notification prompt display");
     this.clearNotificationDismissal();
     this.showNotificationPrompt();
   }
 
   getNotificationDismissalInfo() {
-    const dismissedTime = localStorage.getItem('pwa-notification-dismissed');
+    const dismissedTime = localStorage.getItem("pwa-notification-dismissed");
     if (!dismissedTime) {
-      return { dismissed: false, message: 'Never dismissed' };
+      return { dismissed: false, message: "Never dismissed" };
     }
-    
+
     const dismissedDate = new Date(parseInt(dismissedTime));
     const now = new Date();
     const daysSinceDismissed = (now - dismissedDate) / (1000 * 60 * 60 * 24);
-    const hoursUntilNext = Math.max(0, (2 * 24) - (daysSinceDismissed * 24));
-    
+    const hoursUntilNext = Math.max(0, 2 * 24 - daysSinceDismissed * 24);
+
     return {
       dismissed: true,
       dismissedDate: dismissedDate.toLocaleString(),
       daysSince: Math.floor(daysSinceDismissed * 100) / 100,
       hoursUntilNext: Math.floor(hoursUntilNext * 100) / 100,
-      canShowAgain: daysSinceDismissed >= 2
+      canShowAgain: daysSinceDismissed >= 2,
     };
   }
 }
