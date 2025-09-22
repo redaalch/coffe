@@ -10,12 +10,12 @@ const API_CACHE = "coffee-masters-api-" + CACHE_VERSION;
 // Handle messages from main thread
 self.addEventListener("message", (event) => {
   console.log("Service Worker: Received message:", event.data);
-  
+
   if (event.data && event.data.type === "SKIP_WAITING") {
     console.log("Service Worker: Forcing skip waiting");
     self.skipWaiting();
   }
-  
+
   if (event.data && event.data.type === "GET_VERSION") {
     event.ports[0].postMessage({ version: CACHE_VERSION });
   }
@@ -85,8 +85,7 @@ const CACHE_FIRST = ["/data/images/", "/images/", ".css", ".js"];
 self.addEventListener("install", (event) => {
   console.log("Service Worker: Installing...");
 
-  // Skip waiting to activate immediately
-  self.skipWaiting();
+  // Don't skip waiting automatically - let user decide
 
   event.waitUntil(
     (async () => {
@@ -111,8 +110,7 @@ self.addEventListener("install", (event) => {
 
         console.log("Service Worker: Static assets cached successfully");
 
-        // Skip waiting to activate immediately
-        self.skipWaiting();
+        // Don't skip waiting automatically
       } catch (error) {
         console.error("Service Worker: Error during install:", error);
       }
@@ -163,7 +161,10 @@ self.addEventListener("activate", (event) => {
           client.postMessage({ type: "SW_UPDATED", version: CACHE_VERSION });
         });
 
-        console.log("Service Worker: Activated successfully with version:", CACHE_VERSION);
+        console.log(
+          "Service Worker: Activated successfully with version:",
+          CACHE_VERSION
+        );
       } catch (error) {
         console.error("Service Worker: Error during activation:", error);
       }
