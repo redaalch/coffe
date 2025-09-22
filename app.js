@@ -10,6 +10,7 @@ import { DetailsPage } from "./components/DetailsPage.js";
 import { OrderPage } from "./components/OrderPage.js";
 import { AuthPage } from "./components/AuthPage.js";
 import { ProfilePage } from "./components/ProfilePage.js";
+import { AdminPage } from "./components/AdminPage.js";
 import ProductItem from "./components/ProductItem.js";
 import CartItem from "./components/CartItem.js";
 
@@ -58,13 +59,22 @@ window.addEventListener("authchange", () => {
 function updateAuthUI() {
   const authLink = document.getElementById("linkAuth");
   const profileLink = document.getElementById("linkProfile");
+  const adminLink = document.getElementById("linkAdmin");
 
   if (app.auth.isAuthenticated()) {
     authLink.style.display = "none";
     profileLink.style.display = "block";
+
+    // Show admin link only for admin users
+    if (app.auth.isAdmin()) {
+      adminLink.style.display = "block";
+    } else {
+      adminLink.style.display = "none";
+    }
   } else {
     authLink.style.display = "block";
     profileLink.style.display = "none";
+    adminLink.style.display = "none";
   }
 }
 

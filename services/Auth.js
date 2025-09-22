@@ -39,6 +39,7 @@ class Auth {
         createdAt: new Date().toISOString(),
         orders: [],
         favorites: [],
+        isAdmin: email === "admin@coffeemasters.com", // Make admin@coffeemasters.com an admin
       };
 
       // Save to users list
@@ -99,6 +100,10 @@ class Auth {
 
   isAuthenticated() {
     return this.currentUser !== null;
+  }
+
+  isAdmin() {
+    return this.currentUser && this.currentUser.isAdmin === true;
   }
 
   addToFavorites(productId) {
