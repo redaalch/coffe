@@ -731,34 +731,212 @@ class PWAManager {
   }
 
   showNotificationPrompt() {
+    // Prevent multiple notification banners
+    const existingPrompt = document.getElementById("notification-prompt");
+    if (existingPrompt) {
+      console.log("PWA: Notification prompt already displayed");
+      return;
+    }
+
     const prompt = document.createElement("div");
     prompt.id = "notification-prompt";
-    prompt.className = "pwa-banner";
+    prompt.className = "pwa-banner notification-banner";
     prompt.innerHTML = `
       <div class="banner-content">
+        <div class="notification-icon">
+          <svg viewBox="0 0 24 24" width="32" height="32">
+            <path fill="currentColor" d="M21,19V20H3V19L5,17V11C5,7.9 7.03,5.17 10,4.29C10,4.19 10,4.1 10,4A2,2 0 0,1 12,2A2,2 0 0,1 14,4C14,4.1 14,4.19 14,4.29C16.97,5.17 19,7.9 19,11V17L21,19M14,21A2,2 0 0,1 12,23A2,2 0 0,1 10,21"/>
+          </svg>
+        </div>
         <div class="banner-text">
-          <h3>Stay Updated</h3>
-          <p>Get notified when your order is ready!</p>
+          <h3>🔔 Stay in the Loop!</h3>
+          <p>Get notified when your coffee order is ready for pickup</p>
         </div>
         <div class="banner-actions">
-          <button id="enable-notifications" class="btn-primary">Enable</button>
-          <button id="dismiss-notifications" class="btn-secondary">Not now</button>
+          <button id="enable-notifications" class="btn-enable">
+            <span class="btn-icon">🔔</span>
+            <span class="btn-text">ENABLE NOTIFICATIONS</span>
+          </button>
+          <button id="dismiss-notifications" class="btn-dismiss">
+            <span class="btn-text">MAYBE LATER</span>
+          </button>
         </div>
       </div>
     `;
 
     prompt.style.cssText = `
       position: fixed;
-      top: 0;
+      top: 60px;
       left: 0;
       right: 0;
-      background: var(--color1);
+      background: linear-gradient(135deg, #43281c 0%, #7f4f24 50%, #b08968 100%);
       color: white;
-      padding: 1rem;
-      z-index: 1000;
+      padding: 0;
+      z-index: 1001;
       transform: translateY(-100%);
-      transition: transform 0.3s ease;
+      transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+      box-shadow: 0 4px 20px rgba(67, 40, 28, 0.4);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(251, 242, 198, 0.2);
     `;
+
+    // Add comprehensive styles for notification banner
+    const style = document.createElement("style");
+    style.textContent = `
+      .notification-banner .banner-content {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        padding: 1rem 1.5rem;
+        max-width: 1200px;
+        margin: 0 auto;
+        position: relative;
+      }
+
+      .notification-banner .notification-icon {
+        width: 48px;
+        height: 48px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(251, 242, 198, 0.25);
+        border-radius: 50%;
+        animation: bellShake 2s infinite;
+        border: 2px solid rgba(251, 242, 198, 0.3);
+        box-shadow: 0 2px 10px rgba(67, 40, 28, 0.3);
+      }
+
+      .notification-banner .notification-icon svg {
+        color: var(--highlight, #fbf2c6);
+        filter: drop-shadow(0 1px 2px rgba(67, 40, 28, 0.4));
+      }
+
+      @keyframes bellShake {
+        0%, 50%, 100% { transform: rotate(0deg); }
+        10%, 30% { transform: rotate(-10deg); }
+        20%, 40% { transform: rotate(10deg); }
+      }
+
+      .notification-banner .banner-text {
+        flex: 1;
+      }
+
+      .notification-banner .banner-text h3 {
+        margin: 0 0 0.25rem 0;
+        font-size: 1.1rem;
+        font-weight: 700;
+        text-shadow: 0 2px 4px rgba(67, 40, 28, 0.4);
+        background: linear-gradient(45deg, #fbf2c6, #ede0d4);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+
+      .notification-banner .banner-text p {
+        margin: 0;
+        opacity: 0.95;
+        font-size: 0.9rem;
+        color: #ede0d4;
+        text-shadow: 0 1px 2px rgba(67, 40, 28, 0.3);
+      }
+
+      .notification-banner .banner-actions {
+        display: flex;
+        gap: 0.75rem;
+        align-items: center;
+      }
+
+      .notification-banner .btn-enable {
+        background: linear-gradient(135deg, #43281c 0%, #7f4f24 100%);
+        border: 1px solid rgba(251, 242, 198, 0.6);
+        color: #fbf2c6;
+        padding: 0.75rem 1.5rem;
+        border-radius: 25px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-weight: 600;
+        backdrop-filter: blur(10px);
+        text-shadow: 0 1px 2px rgba(67, 40, 28, 0.4);
+        text-transform: uppercase;
+        letter-spacing: 0.3px;
+        font-size: 0.85rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .notification-banner .btn-enable::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(251, 242, 198, 0.3), transparent);
+        transition: left 0.6s ease;
+      }
+
+      .notification-banner .btn-enable:hover::before {
+        left: 100%;
+      }
+
+      .notification-banner .btn-enable:hover {
+        background: linear-gradient(135deg, #7f4f24 0%, #b08968 100%);
+        border-color: rgba(251, 242, 198, 0.8);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(67, 40, 28, 0.3);
+      }
+
+      .notification-banner .btn-dismiss {
+        background: rgba(237, 224, 212, 0.15);
+        border: 1px solid rgba(237, 224, 212, 0.4);
+        color: #ede0d4;
+        padding: 0.75rem 1rem;
+        border-radius: 20px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-weight: 500;
+        backdrop-filter: blur(10px);
+        text-shadow: 0 1px 2px rgba(67, 40, 28, 0.3);
+        text-transform: uppercase;
+        letter-spacing: 0.2px;
+        font-size: 0.85rem;
+      }
+
+      .notification-banner .btn-dismiss:hover {
+        background: rgba(237, 224, 212, 0.25);
+        border-color: rgba(251, 242, 198, 0.6);
+        transform: translateY(-1px);
+        box-shadow: 0 3px 10px rgba(67, 40, 28, 0.2);
+      }
+
+      @media (max-width: 480px) {
+        .notification-banner {
+          top: 50px !important;
+        }
+        
+        .notification-banner .banner-content {
+          flex-direction: column;
+          text-align: center;
+          gap: 0.75rem;
+          padding: 1rem;
+        }
+
+        .notification-banner .banner-actions {
+          justify-content: center;
+          width: 100%;
+        }
+
+        .notification-banner .btn-enable,
+        .notification-banner .btn-dismiss {
+          flex: 1;
+          justify-content: center;
+        }
+      }
+    `;
+    document.head.appendChild(style);
 
     document.body.appendChild(prompt);
 
@@ -769,13 +947,24 @@ class PWAManager {
     prompt
       .querySelector("#enable-notifications")
       .addEventListener("click", () => {
+        const btn = prompt.querySelector("#enable-notifications");
+        btn.innerHTML = `
+          <span class="btn-icon">⏳</span>
+          <span class="btn-text">ENABLING...</span>
+        `;
+        btn.style.pointerEvents = "none";
         this.requestNotificationPermission();
       });
 
     prompt
       .querySelector("#dismiss-notifications")
       .addEventListener("click", () => {
-        this.hideNotificationPrompt();
+        prompt.style.transform = "translateY(-100%)";
+        setTimeout(() => {
+          prompt.remove();
+          // Clean up the style element
+          style.remove();
+        }, 400);
       });
   }
 
@@ -783,7 +972,16 @@ class PWAManager {
     const prompt = document.getElementById("notification-prompt");
     if (prompt) {
       prompt.style.transform = "translateY(-100%)";
-      setTimeout(() => prompt.remove(), 300);
+      setTimeout(() => {
+        prompt.remove();
+        // Clean up any associated styles
+        const styles = document.querySelectorAll("style");
+        styles.forEach((style) => {
+          if (style.textContent.includes("notification-banner")) {
+            style.remove();
+          }
+        });
+      }, 400);
     }
   }
 
