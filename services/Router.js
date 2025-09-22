@@ -3,13 +3,13 @@ const Router = {
   basePath: (() => {
     const path = location.pathname;
     // If we're on GitHub Pages with a repository name
-    if (location.hostname.includes('github.io') && path !== '/') {
-      const segments = path.split('/').filter(Boolean);
-      return segments.length > 0 ? `/${segments[0]}` : '';
+    if (location.hostname.includes("github.io") && path !== "/") {
+      const segments = path.split("/").filter(Boolean);
+      return segments.length > 0 ? `/${segments[0]}` : "";
     }
-    return '';
+    return "";
   })(),
-  
+
   init: () => {
     document.querySelectorAll("a.navlink").forEach((a) => {
       a.addEventListener("click", (event) => {
@@ -25,7 +25,7 @@ const Router = {
     let currentPath = location.pathname;
     // Remove base path for routing
     if (Router.basePath && currentPath.startsWith(Router.basePath)) {
-      currentPath = currentPath.substring(Router.basePath.length) || '/';
+      currentPath = currentPath.substring(Router.basePath.length) || "/";
     }
     Router.go(currentPath);
   },
