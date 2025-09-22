@@ -5,9 +5,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Coffee Masters</title>
     <script>
-      // GitHub Pages SPA routing fix for root deployment
-      sessionStorage.setItem("redirectPath", location.pathname);
-      location.replace("/");
+      // GitHub Pages SPA routing fix for repository deployment
+      const currentPath = location.pathname;
+      const basePath = "/coffe";
+
+      // Extract the app route from the full path
+      let appRoute = currentPath;
+      if (currentPath.startsWith(basePath)) {
+        appRoute = currentPath.substring(basePath.length) || "/";
+      }
+
+      sessionStorage.setItem("redirectPath", appRoute);
+      location.replace(basePath + "/");
     </script>
   </head>
   <body>
