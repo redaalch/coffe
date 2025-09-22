@@ -26,6 +26,9 @@ const Router = {
     return currentPath;
   },
   go: (route, addToHistory = true) => {
+    // Debug logging
+    console.log(`Router.go called with route: ${route}, addToHistory: ${addToHistory}`);
+    
     if (addToHistory) {
       // Add base path when updating history
       const fullPath = Router.basePath + route;
@@ -52,10 +55,12 @@ const Router = {
           const paramId = route.substring(route.lastIndexOf("-") + 1);
           pageElement.dataset.id = paramId;
         } else {
-          // For unknown routes, redirect to home
-          console.log(`Unknown route: ${route}, redirecting to home`);
-          Router.go("/", true);
-          return;
+          // For truly unknown routes, redirect to home - but don't redirect "/" itself
+          if (route !== "/") {
+            console.log(`Unknown route: ${route}, redirecting to home`);
+            Router.go("/", true);
+            return;
+          }
         }
     }
     if (pageElement) {
