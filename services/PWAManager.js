@@ -384,16 +384,26 @@ class PWAManager {
   showUpdateAvailable() {
     const updateBanner = document.createElement("div");
     updateBanner.id = "update-banner";
-    updateBanner.className = "pwa-banner";
+    updateBanner.className = "pwa-banner update-banner";
     updateBanner.innerHTML = `
       <div class="banner-content">
+        <div class="update-icon">
+          <svg viewBox="0 0 24 24" width="24" height="24">
+            <path fill="currentColor" d="M12,18A6,6 0 0,1 6,12C6,10.24 6.7,8.63 7.8,7.5L9,8.7C8.1,9.5 7.5,10.7 7.5,12A4.5,4.5 0 0,0 12,16.5A4.5,4.5 0 0,0 16.5,12C16.5,10.7 15.9,9.5 15,8.7L16.2,7.5C17.3,8.63 18,10.24 18,12A6,6 0 0,1 12,18M12,2A10,10 0 0,1 22,12A10,10 0 0,1 12,22A10,10 0 0,1 2,12A10,10 0 0,1 12,2M12,6A6,6 0 0,0 6,12H2L6,16L10,12H6A6,6 0 0,1 12,6V2L8,6L12,10V6Z"/>
+          </svg>
+        </div>
         <div class="banner-text">
-          <h3>Update Available</h3>
-          <p>A new version of Coffee Masters is ready!</p>
+          <h3>🚀 Update Available!</h3>
+          <p>New features and improvements are ready</p>
         </div>
         <div class="banner-actions">
-          <button id="update-app" class="btn-primary">Update</button>
-          <button id="dismiss-update" class="btn-secondary">Later</button>
+          <button id="update-app" class="btn-update">
+            <span class="btn-icon">⚡</span>
+            <span class="btn-text">Update Now</span>
+          </button>
+          <button id="dismiss-update" class="btn-dismiss">
+            <span class="btn-text">Later</span>
+          </button>
         </div>
       </div>
     `;
@@ -403,13 +413,166 @@ class PWAManager {
       top: 0;
       left: 0;
       right: 0;
-      background: var(--color2);
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
       color: white;
-      padding: 1rem;
+      padding: 0;
       z-index: 1000;
       transform: translateY(-100%);
-      transition: transform 0.3s ease;
+      transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+      box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(255,255,255,0.1);
     `;
+
+    // Add cool styles for the banner content
+    const style = document.createElement("style");
+    style.textContent = `
+      .update-banner .banner-content {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        padding: 1rem 1.5rem;
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+
+      .update-banner .update-icon {
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(255,255,255,0.2);
+        border-radius: 50%;
+        animation: pulse 2s infinite;
+      }
+
+      .update-banner .update-icon svg {
+        animation: rotate 3s linear infinite;
+      }
+
+      @keyframes pulse {
+        0%, 100% { transform: scale(1); }
+        50% { transform: scale(1.1); }
+      }
+
+      @keyframes rotate {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(360deg); }
+      }
+
+      .update-banner .banner-text {
+        flex: 1;
+      }
+
+      .update-banner .banner-text h3 {
+        margin: 0 0 0.25rem 0;
+        font-size: 1.1rem;
+        font-weight: 600;
+        text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+      }
+
+      .update-banner .banner-text p {
+        margin: 0;
+        opacity: 0.9;
+        font-size: 0.9rem;
+      }
+
+      .update-banner .banner-actions {
+        display: flex;
+        gap: 0.75rem;
+        align-items: center;
+      }
+
+      .update-banner .btn-update {
+        background: linear-gradient(45deg, #ff6b6b, #ff8e53);
+        border: none;
+        color: white;
+        padding: 0.75rem 1.25rem;
+        border-radius: 25px;
+        font-weight: 600;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(255, 107, 107, 0.4);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .update-banner .btn-update::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+        transition: left 0.6s;
+      }
+
+      .update-banner .btn-update:hover::before {
+        left: 100%;
+      }
+
+      .update-banner .btn-update:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(255, 107, 107, 0.6);
+      }
+
+      .update-banner .btn-update:active {
+        transform: translateY(0);
+      }
+
+      .update-banner .btn-update .btn-icon {
+        font-size: 1.1rem;
+        animation: bounce 1s infinite;
+      }
+
+      @keyframes bounce {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-3px); }
+      }
+
+      .update-banner .btn-dismiss {
+        background: rgba(255,255,255,0.1);
+        border: 1px solid rgba(255,255,255,0.3);
+        color: white;
+        padding: 0.75rem 1rem;
+        border-radius: 20px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-weight: 500;
+        backdrop-filter: blur(10px);
+      }
+
+      .update-banner .btn-dismiss:hover {
+        background: rgba(255,255,255,0.2);
+        transform: translateY(-1px);
+      }
+
+      @media (max-width: 480px) {
+        .update-banner .banner-content {
+          flex-direction: column;
+          text-align: center;
+          gap: 0.75rem;
+          padding: 1rem;
+        }
+
+        .update-banner .banner-actions {
+          justify-content: center;
+          width: 100%;
+        }
+
+        .update-banner .btn-update,
+        .update-banner .btn-dismiss {
+          flex: 1;
+          justify-content: center;
+        }
+      }
+    `;
+    document.head.appendChild(style);
 
     document.body.appendChild(updateBanner);
 
@@ -418,14 +581,26 @@ class PWAManager {
     }, 100);
 
     updateBanner.querySelector("#update-app").addEventListener("click", () => {
-      window.location.reload();
+      const btn = updateBanner.querySelector("#update-app");
+      btn.innerHTML = `
+        <span class="btn-icon">⏳</span>
+        <span class="btn-text">Updating...</span>
+      `;
+      btn.style.pointerEvents = "none";
+      setTimeout(() => {
+        window.location.reload();
+      }, 500);
     });
 
     updateBanner
       .querySelector("#dismiss-update")
       .addEventListener("click", () => {
         updateBanner.style.transform = "translateY(-100%)";
-        setTimeout(() => updateBanner.remove(), 300);
+        setTimeout(() => {
+          updateBanner.remove();
+          // Clean up the style element
+          style.remove();
+        }, 400);
       });
   }
 
