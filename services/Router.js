@@ -1,4 +1,7 @@
 const Router = {
+  // Base path for GitHub Pages repository deployment
+  basePath: "/coffe",
+
   init: () => {
     document.querySelectorAll("a.navlink").forEach((a) => {
       a.addEventListener("click", (event) => {
@@ -8,14 +11,25 @@ const Router = {
       });
     });
     window.addEventListener("popstate", (event) => {
-      Router.go(event.state?.route || location.pathname, false);
+      Router.go(event.state?.route || Router.getCurrentRoute(), false);
     });
     // Handle initial load - get the current path and route to it
-    Router.go(location.pathname);
+    Router.go(Router.getCurrentRoute());
+  },
+
+  getCurrentRoute: () => {
+    let currentPath = location.pathname;
+    // Remove base path for routing
+    if (currentPath.startsWith(Router.basePath)) {
+      currentPath = currentPath.substring(Router.basePath.length) || "/";
+    }
+    return currentPath;
   },
   go: (route, addToHistory = true) => {
     if (addToHistory) {
-      history.pushState({ route }, "", route);
+      // Add base path when updating history
+      const fullPath = Router.basePath + route;
+      history.pushState({ route }, "", fullPath);
     }
     let pageElement = null;
     switch (route) {
