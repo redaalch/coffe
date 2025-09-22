@@ -1,10 +1,11 @@
 // Coffee Masters PWA Service Worker
-// Version 2.0 - Enhanced with offline support, caching, and push notifications
+// Version 2.1 - Enhanced with automatic cache busting and updates
 
-const CACHE_NAME = "coffee-masters-v2.0";
-const STATIC_CACHE = "coffee-masters-static-v2.0";
-const DYNAMIC_CACHE = "coffee-masters-dynamic-v2.0";
-const API_CACHE = "coffee-masters-api-v2.0";
+const CACHE_VERSION = "v2.1-" + new Date().getTime(); // Dynamic version based on timestamp
+const CACHE_NAME = "coffee-masters-" + CACHE_VERSION;
+const STATIC_CACHE = "coffee-masters-static-" + CACHE_VERSION;
+const DYNAMIC_CACHE = "coffee-masters-dynamic-" + CACHE_VERSION;
+const API_CACHE = "coffee-masters-api-" + CACHE_VERSION;
 
 // Assets to cache immediately
 const STATIC_ASSETS = [
@@ -70,6 +71,9 @@ const CACHE_FIRST = ["/data/images/", "/images/", ".css", ".js"];
 self.addEventListener("install", (event) => {
   console.log("Service Worker: Installing...");
 
+  // Skip waiting to activate immediately
+  self.skipWaiting();
+
   event.waitUntil(
     (async () => {
       try {
@@ -112,11 +116,19 @@ self.addEventListener("activate", (event) => {
         // Get all cache names
         const cacheNames = await caches.keys();
 
+        // Current cache names that should be kept
+        const currentCaches = [
+          CACHE_NAME,
+          STATIC_CACHE,
+          DYNAMIC_CACHE,
+          API_CACHE,
+        ];
+
         // Delete old caches
         const deletePromises = cacheNames
           .filter(
             (name) =>
-              name.startsWith("coffee-masters") && !name.includes("v2.0")
+              name.startsWith("coffee-masters") && !currentCaches.includes(name)
           )
           .map((name) => {
             console.log("Service Worker: Deleting old cache:", name);
@@ -124,6 +136,16 @@ self.addEventListener("activate", (event) => {
           });
 
         await Promise.all(deletePromises);
+
+        // Clear all caches and force refresh on version change
+        if (deletePromises.length > 0) {
+          console.log("Service Worker: Cleared old caches, forcing refresh");
+          // Notify all clients to refresh
+          const clients = await self.clients.matchAll();
+          clients.forEach((client) => {
+            client.postMessage({ type: "CACHE_UPDATED" });
+          });
+        }
 
         // Claim clients immediately
         await self.clients.claim();

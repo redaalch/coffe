@@ -44,6 +44,17 @@ class PWAManager {
           });
         });
 
+        // Listen for cache update messages from service worker
+        navigator.serviceWorker.addEventListener("message", (event) => {
+          if (event.data && event.data.type === "CACHE_UPDATED") {
+            console.log("PWA: Cache updated, refreshing page...");
+            // Small delay to allow service worker to finish cleanup
+            setTimeout(() => {
+              window.location.reload(true);
+            }, 100);
+          }
+        });
+
         // Store registration for push notifications
         this.swRegistration = registration;
 
