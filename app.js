@@ -41,6 +41,9 @@ async function initializeApp() {
 
     // Setup PWA event listeners
     setupPWAEventListeners();
+
+    // Setup badge positioning event listeners
+    setupBadgePositioning();
   } catch (error) {
     console.error("Error during app initialization:", error);
   }
@@ -64,14 +67,39 @@ function updateCartCounter() {
   const qty = app.store.cart.reduce((acc, item) => acc + item.quantity, 0);
 
   if (badge) {
-    badge.textContent = qty;
-    badge.hidden = qty == 0;
+    if (qty > 0) {
+      badge.textContent = qty;
+      badge.hidden = false;
+      // Position badge relative to cart icon using fixed positioning
+      positionCartBadge();
+    } else {
+      badge.textContent = "";
+      badge.hidden = true;
+    }
   }
 
   if (mobileBadge) {
-    mobileBadge.textContent = qty;
-    mobileBadge.hidden = qty == 0;
+    if (qty > 0) {
+      mobileBadge.textContent = qty;
+      mobileBadge.hidden = false;
+    } else {
+      mobileBadge.textContent = "";
+      mobileBadge.hidden = true;
+    }
   }
+}
+
+function positionCartBadge() {
+  const badge = document.getElementById("badge");
+  const cartContainer = document.querySelector(".cart-container");
+
+  if (!badge || !cartContainer) return;
+
+  const cartRect = cartContainer.getBoundingClientRect();
+
+  // Position badge at top-right corner of cart icon
+  badge.style.left = cartRect.right - 6 + "px";
+  badge.style.top = cartRect.top - 6 + "px";
 }
 
 window.addEventListener("authchange", () => {
@@ -235,4 +263,21 @@ function setupPWAEventListeners() {
   // PWA events (install, network, etc.) are handled internally by PWAManager
   // This function is kept for compatibility but no longer needed
   console.log("PWA: Event listeners are managed by PWAManager");
+}
+
+function setupBadgePositioning() {
+  // Reposition badge on window resize and scroll
+  window.addEventListener("resize", () => {
+    const badge = document.getElementById("badge");
+    if (badge && !badge.hidden) {
+      positionCartBadge();
+    }
+  });
+
+  window.addEventListener("scroll", () => {
+    const badge = document.getElementById("badge");
+    if (badge && !badge.hidden) {
+      positionCartBadge();
+    }
+  });
 }

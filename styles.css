@@ -302,9 +302,7 @@ section.page {
   text-align: center;
   font-size: 10px;
   color: white;
-  position: absolute;
-  right: -6px;
-  top: -6px;
+  position: fixed; /* Use fixed positioning to avoid parent transform effects */
   z-index: 1001;
   animation: bounce 0.6s ease-in-out;
   min-width: 14px;
@@ -312,18 +310,23 @@ section.page {
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: transform 0.3s ease;
+  pointer-events: none; /* Prevent badge from interfering with hover */
+  will-change: transform; /* Optimize for transform changes */
 }
 
 /* Hide badge when hidden attribute is set */
 #badge[hidden] {
   display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
 }
 
-/* Counter the hover scale effect on badge to maintain readability */
-.cart-container:hover #badge {
-  transform: scale(0.91); /* Counter parent's scale(1.1) to keep badge readable */
+/* Additional safety - hide badge when content is empty */
+#badge:empty {
+  display: none !important;
 }
+
+/* Badge positioning is now handled by JavaScript with fixed positioning */
 
 /* Enhanced button animations */
 button:not(.navlink):not(.qty-btn):not(.favorite-btn) {
