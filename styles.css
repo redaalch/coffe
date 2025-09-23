@@ -312,6 +312,7 @@ section.page {
   display: flex;
   align-items: center;
   justify-content: center;
+  transform: scale(0.91); /* Counter the parent's scale(1.1) on hover */
   transition: transform 0.3s ease;
 }
 
@@ -320,9 +321,9 @@ section.page {
   display: none !important;
 }
 
-/* Counter the hover scale effect on badge to maintain readability */
+/* Counter the hover scale effect on badge */
 .cart-container:hover #badge {
-  transform: scale(0.91); /* Counter parent's scale(1.1) to keep badge readable */
+  transform: scale(0.83); /* Counter scale(1.1) * scale(0.91) ≈ scale(1) */
 }
 
 /* Enhanced button animations */
